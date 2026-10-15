@@ -3,10 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-l1CPX+mMidmJGeGsAr3jpKijO6JTWV33EQfn681PeIg='; style-src 'unsafe-inline'; connect-src https://api.jsonbin.io; img-src 'self' data:; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-Kd3USFekK4cbmNvCth5krvhKw5XACKQvuXGbwfmB0Cc='; style-src 'unsafe-inline'; connect-src https://api.jsonbin.io; img-src 'self' data:; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
 <meta name="robots" content="noindex, nofollow, noarchive">
 <meta name="referrer" content="no-referrer">
 <meta name="theme-color" content="#0f2a44">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="DigitaraLab Lisans">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <title>DigitaraLab Lisans</title>
 <style>
 :root{
@@ -28,7 +35,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 header{position:sticky;top:0;z-index:5;background:var(--brand);color:#fff;padding:calc(env(safe-area-inset-top) + 10px) 16px 10px;display:flex;align-items:center;gap:10px}
 header h1{font-size:17px;margin:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .env{font-size:12px;font-weight:800;letter-spacing:.06em;padding:3px 8px;border-radius:999px}
-.env.test{background:var(--test-bg);color:#5a3b00}
+.env.test{background:var(--test-bg);color:var(--test)}
 .env.real{background:#ff5a4e;color:#fff}
 .hbtn{background:rgba(255,255,255,.12);border:0;color:#fff;min-width:44px;height:44px;border-radius:12px;font-size:18px;cursor:pointer}
 main{max-width:760px;margin:0 auto;padding:14px 16px calc(96px + env(safe-area-inset-bottom))}
@@ -57,7 +64,8 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-
 .lic .biz{font-weight:700;font-size:16px;flex:1;word-break:break-word}
 .lic code{font:600 14px/1.3 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.02em;word-break:break-all}
 .lic .meta{font-size:14px;color:var(--muted);margin:4px 0 10px}
-.lic .acts{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.lic .acts{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.tags{display:flex;flex-wrap:wrap;gap:4px;margin:-4px 0 10px}
 .lic .acts .btn{padding:0 4px;font-size:14px;min-height:44px}
 .badge{font-size:12px;font-weight:700;padding:3px 8px;border-radius:999px;white-space:nowrap}
 .b-ok{background:var(--ok-bg);color:var(--ok)} .b-warn{background:var(--warn-bg);color:var(--warn)}
@@ -90,6 +98,19 @@ nav button.on{color:var(--accent)}
 .bigkey{font:700 20px/1.3 ui-monospace,SFMono-Regular,Menlo,monospace;text-align:center;padding:12px;background:var(--bg);border-radius:12px;margin:8px 0;word-break:break-all}
 .log{font-size:14px;border-bottom:1px solid var(--line);padding:8px 0}
 .log:last-child{border-bottom:0}
+.daypick{align-items:center}
+.daypick .btn{flex:0 0 auto;padding:0 12px}
+.daypick .dayin{flex:1 1 80px;width:auto;min-width:80px}
+.pkgrow{display:grid;grid-template-columns:1fr 64px 92px 44px;gap:6px;align-items:center;margin:6px 0}
+.pkgrow input{min-height:44px;padding:8px}
+.pkgrow .btn{min-height:44px;padding:0}
+.pkghead{display:grid;grid-template-columns:1fr 64px 92px 44px;gap:6px;font-size:12px;color:var(--muted);font-weight:600}
+.vars{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.vars .chip{min-height:36px;padding:6px 10px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.preview{white-space:pre-wrap;background:var(--bg);border-radius:12px;padding:12px;font-size:14px;margin-top:8px}
+.grp{border:1px solid var(--line);border-radius:12px;padding:10px;margin:10px 0}
+.grp h4{margin:0 0 6px;font-size:15px}
+.note{font-size:13px;color:var(--muted);margin:6px 0 0}
 footer{text-align:center;font-size:12px;color:var(--muted);padding:8px 0 0;word-break:break-all}
 </style>
 </head>
@@ -112,6 +133,11 @@ footer{text-align:center;font-size:12px;color:var(--muted);padding:8px 0 0;word-
     <div id="s-adm-wrap" class="hidden">
       <label for="s-admid">Yönetim kaydı kimliği (diğer cihazda Ayarlar'da yazar)</label>
       <input id="s-admid" type="text" autocomplete="off" autocapitalize="off" spellcheck="false">
+    </div>
+    <label class="check"><input type="checkbox" id="s-sep"> <span>Yönetim kaydı <b>ayrı bir JSONBin hesabında</b> (önerilir: lisans hesabının anahtarı eski uygulama sürümlerinin içinde de bulunur)</span></label>
+    <div id="s-sep-wrap" class="hidden">
+      <label for="s-amk">Yönetim hesabının Master Key'i</label>
+      <input id="s-amk" type="password" autocomplete="off" autocapitalize="off" spellcheck="false">
     </div>
     <label for="s-dev">Bu cihazın adı (günlükte görünür)</label>
     <input id="s-dev" type="text" placeholder="ör. Telefon, Mac" maxlength="24">
@@ -152,7 +178,7 @@ footer{text-align:center;font-size:12px;color:var(--muted);padding:8px 0 0;word-
       <div class="chips" id="chips" style="margin-top:10px">
         <button class="chip on" data-f="all">Tümü</button><button class="chip" data-f="active">Aktif</button>
         <button class="chip" data-f="soon">7 gün içinde bitecek</button><button class="chip" data-f="expired">Süresi dolan</button>
-        <button class="chip" data-f="closed">Kapalı</button><button class="chip" data-f="trial">Deneme</button>
+        <button class="chip" data-f="closed">Kapalı</button><button class="chip" data-f="trial">Deneme</button><button class="chip" data-f="loy">⭐ Puan denemesi</button>
       </div>
       <p class="muted" id="list-info"></p>
       <div id="list"></div>
@@ -169,10 +195,13 @@ footer{text-align:center;font-size:12px;color:var(--muted);padding:8px 0 0;word-
         <input id="n-biz" type="text" maxlength="80" autocomplete="off">
         <label>Tür</label>
         <div class="seg" id="n-type"><button type="button" data-t="DL" class="on">Tam lisans (DL-)</button><button type="button" data-t="DENEME">Deneme (DENEME-)</button></div>
-        <label>Süre</label>
+        <label id="n-dur-l">Paket</label>
         <div class="row" id="n-dur"></div>
         <label for="n-exp">Bitiş tarihi</label>
         <input id="n-exp" type="date">
+        <label>⭐ Puan Kulübü</label>
+        <div class="seg" id="n-loy"><button type="button" data-l="off" class="on">Kapalı</button><button type="button" data-l="trial">Deneme</button><button type="button" data-l="on">Aktif</button></div>
+        <div id="n-loy-days" class="hidden"></div>
         <div id="n-prev"></div>
         <p class="err" id="n-err"></p>
         <button class="btn primary block" id="n-go" type="button" style="margin-top:8px">🔐 Anahtar oluştur ve kaydet</button>
@@ -193,6 +222,38 @@ footer{text-align:center;font-size:12px;color:var(--muted);padding:8px 0 0;word-
       <div class="card">
         <h2>🔗 Bağlantı</h2>
         <div class="kv" id="set-conn"></div>
+        <div class="row" style="margin-top:12px"><button class="btn" id="set-mk" type="button">🔑 Master Key'i güncelle</button><button class="btn" id="set-move" type="button">🏦 Yönetim kaydını taşı</button></div>
+      </div>
+      <div class="card">
+        <h2>📦 Paketler ve fiyatlar</h2>
+        <p class="muted">Yeni lisans ve süre uzatmada düğme olarak çıkar. Fiyat yalnız günlüğe yazılır, müşterinin kaydına girmez.</p>
+        <div class="pkghead"><span>Paket adı</span><span>Ay</span><span>Fiyat ₺</span><span></span></div>
+        <div id="set-pk"></div>
+        <div class="row" style="margin-top:8px"><button class="btn" id="set-pk-add" type="button">➕ Paket ekle</button><button class="btn" id="set-pk-def" type="button">↩️ Varsayılanlar</button><button class="btn primary" id="set-pk-save" type="button">Kaydet</button></div>
+      </div>
+      <div class="card">
+        <h2>⏳ Deneme süreleri (varsayılan)</h2>
+        <p class="muted">Her müşteri için deneme açarken ayrıca 5 / 7 / 10 / 14 gün ya da elle gün seçilebilir.</p>
+        <label for="set-td">Ana lisans denemesi (DENEME- anahtarı), gün</label>
+        <input id="set-td" type="number" min="1" max="365" inputmode="numeric">
+        <label for="set-ltd">Puan Kulübü denemesi, gün</label>
+        <input id="set-ltd" type="number" min="1" max="365" inputmode="numeric">
+        <button class="btn primary block" id="set-trial-save" type="button" style="margin-top:12px">Kaydet</button>
+      </div>
+      <div class="card">
+        <h2>💬 WhatsApp şablonları</h2>
+        <label for="set-tpl-k">Şablon</label>
+        <select id="set-tpl-k"></select>
+        <div class="vars" id="set-tpl-vars"></div>
+        <textarea id="set-tpl-t" style="min-height:260px"></textarea>
+        <p class="note">Örnek görünüm:</p>
+        <div class="preview" id="set-tpl-prev"></div>
+        <div class="row" style="margin-top:8px"><button class="btn" id="set-tpl-def" type="button">↩️ Varsayılana dön</button><button class="btn primary" id="set-tpl-save" type="button">Kaydet</button></div>
+      </div>
+      <div class="card">
+        <h2>👥 Eski kayıtları müşteriye bağla</h2>
+        <p class="muted">Müşteri kimliği olmayan eski anahtarlar adı benzeyenlere göre gruplanır. Hiçbiri kendiliğinden bağlanmaz: aynı işletmeye ait olduğundan emin olduklarınızı işaretleyin. Bağlanan anahtarlar yeni lisans açarken "Bu müşteriye ait" olarak gelir.</p>
+        <div id="set-legacy"></div>
       </div>
       <div class="card">
         <h2>💾 Yedekler (bu cihazda, şifreli)</h2>
@@ -361,7 +422,71 @@ const DB = {
 
 // ── Durum ─────────────────────────────────────────
 const S = { secrets: null, vaultKey: null, adminKey: null, base: null, admin: null, device: null,
-            lastAct: Date.now(), tab: 'list', filter: 'all', q: '', newType: 'DL', newDur: null };
+            lastAct: Date.now(), tab: 'list', filter: 'all', q: '', newType: 'DL', newPkg: null, newLoy: 'off',
+            newTrialPick: null, newLoyPick: null };
+
+// ── Ayarlar: paketler, deneme süreleri, WhatsApp şablonları (yönetim kaydında; yoksa varsayılan) ──
+const TRIAL_CHOICES = [5, 7, 10, 14];
+const DEFAULT_PACKAGES = [
+  { name: 'Başlangıç', months: 3, price: 4500 },
+  { name: 'Profesyonel', months: 6, price: 7500 },
+  { name: 'İşletme', months: 12, price: 12000 },
+];
+const TPL_VARS = ['isletme', 'anahtar', 'bitis', 'ay', 'gun'];
+const TPL_META = [
+  ['trial', '🎁 Deneme lisansı'], ['full', '✅ Tam lisans'], ['renew', '🔄 Süre uzatma'],
+  ['loyTrial', '⭐ Puan Kulübü denemesi açıldı'], ['loyFull', '⭐ Puan Kulübü aktif edildi'], ['loyExpired', '⏳ Puan Kulübü denemesi bitti'],
+];
+const fullTpl = first => 'Merhaba! 🎠\n\n' + first + '\n\n🏢 İşletme: {isletme}\n🔑 Lisans Anahtarı: {anahtar}\n📅 Süre: {ay} ay ({bitis} tarihine kadar)\n\n' +
+  'Kullanım:\n1. DigiPark\'ı açın\n2. Lisans anahtarını girin\n3. Kullanmaya başlayın ✅\n\nSorularınız için bize ulaşın.\nDigitaraLab 🚀';
+const DEFAULT_TPL = {
+  trial: 'Merhaba! 🎠\n\nDigiPark Oyun Parkı Yönetim Sistemi — {gun} GÜNLÜK ÜCRETSİZ DENEME hesabınız hazır! 🎁\n\n' +
+    '🏢 İşletme: {isletme}\n🔑 Deneme Anahtarı: {anahtar}\n📅 Deneme Süresi: {gun} gün ({bitis} tarihine kadar)\n\n' +
+    'Kullanım:\n1. DigiPark\'ı açın\n2. Deneme anahtarını girin\n3. Tüm özellikleri {gun} gün boyunca ücretsiz deneyin ✅\n\n' +
+    'Deneme bitince beğenirseniz tam lisansa kolayca geçebilirsiniz.\n\nSorularınız için bize ulaşın.\nDigitaraLab 🚀',
+  full: fullTpl('DigiPark Oyun Parkı Yönetim Sisteminiz aktif edildi.'),
+  renew: fullTpl('DigiPark lisansınız uzatıldı.'),
+  loyTrial: 'Merhaba! ⭐\n\nDigiPark Puan Kulübü — {gun} GÜNLÜK ÜCRETSİZ DENEME açıldı! 🎁\n\n' +
+    '🏢 İşletme: {isletme}\n📅 Deneme Süresi: {gun} gün ({bitis} tarihine kadar)\n\n' +
+    'Kullanım:\n1. DigiPark\'ı internet açıkken kapatıp yeniden açın\n2. Ayarlar\'dan ⭐ Puan & Hediye\'yi açın\n3. Puan, kart ve hediyeleri {gun} gün boyunca ücretsiz deneyin ✅\n\n' +
+    'Deneme bitince beğenirseniz Puan Kulübü\'ne kolayca geçebilirsiniz.\n\nSorularınız için bize ulaşın.\nDigitaraLab 🚀',
+  loyFull: 'Merhaba! ⭐\n\nDigiPark Puan Kulübü aktif edildi.\n\n🏢 İşletme: {isletme}\n📅 Geçerlilik: lisansınızla birlikte ({bitis} tarihine kadar)\n\n' +
+    'Kullanım:\n1. DigiPark\'ı internet açıkken kapatıp yeniden açın\n2. Ayarlar\'dan ⭐ Puan & Hediye\'yi açın\n3. Çocuklara puan kazandırmaya başlayın ✅\n\n' +
+    'Sorularınız için bize ulaşın.\nDigitaraLab 🚀',
+  loyExpired: 'Merhaba! ⭐\n\nDigiPark Puan Kulübü deneme süreniz {bitis} tarihinde sona erdi.\n\n🏢 İşletme: {isletme}\n\n' +
+    'Puanlar, kartlar ve geçmiş kayıtlarınız silinmedi; Puan Kulübü\'nü aktif ettiğinizde kaldığınız yerden devam edersiniz ✅\n\n' +
+    'Puan Kulübü\'ne geçmek için bize ulaşın.\nDigitaraLab 🚀',
+};
+function posInt(v, max) { const n = typeof v === 'string' && v.trim() ? Number(v) : v; return Number.isInteger(n) && n >= 1 && n <= (max || 3650) ? n : null; }
+function cleanPackages(list) {
+  return (Array.isArray(list) ? list : []).filter(p => p && typeof p.name === 'string' && p.name.trim() && posInt(p.months, 120) && Number.isInteger(p.price) && p.price >= 0)
+    .slice(0, 8).map(p => ({ name: p.name.trim().slice(0, 30), months: p.months, price: p.price }));
+}
+function cfg() {
+  const s = (S.admin && S.admin.settings) || {}, pk = cleanPackages(s.packages);
+  const tpl = Object.assign({}, DEFAULT_TPL);
+  if (s.tpl && typeof s.tpl === 'object') for (const [k] of TPL_META) if (typeof s.tpl[k] === 'string' && s.tpl[k].trim()) tpl[k] = s.tpl[k];
+  return { v2Write: !!s.v2Write, trialDays: posInt(s.trialDays, 365) || 7, loyTrialDays: posInt(s.loyTrialDays, 365) || 14,
+           packages: pk.length ? pk : DEFAULT_PACKAGES, tpl };
+}
+const fmtTL = n => '₺' + Number(n).toLocaleString('tr-TR');
+const fillTpl = (t, vars) => t.replace(/\{(isletme|anahtar|bitis|ay|gun)\}/g, (m, k) => vars[k] == null || vars[k] === '' ? m : String(vars[k]));
+const daysBetween = (a, b) => Math.round((utc(b) - utc(a)) / 864e5);
+const monthsBetween = (a, b) => Math.max(1, Math.round(daysBetween(a, b) / 30.4375));
+// Puan Kulübü durumu, uygulamayla aynı hesap: deneme başlangıç + gün; ilk geçersiz gün = başlangıç + gün
+// Sadakat profilinde Puan Kulübü her zaman açıktır; deneme bilgisi yine ayrıca hesaplanır (loyTrial)
+function loyState(e) {
+  const t = loyTrial(e);
+  return e.profile === 'sadakat' ? Object.assign({}, t, { mode: 'on', sadakat: true }) : t;
+}
+function loyTrial(e) {
+  if (e.loyalty === true) return { mode: 'on' };
+  if (e.loyalty !== 'trial') return { mode: 'off' };
+  const days = posInt(e.loyaltyTrialDays, 365) || 30, start = isDate(e.loyaltyTrialStart) ? e.loyaltyTrialStart : null;
+  if (!start) return { mode: 'trial', days, start: null };
+  const last = addDays(start, days - 1), left = Math.max(0, daysLeft(addDays(start, days)));
+  return { mode: 'trial', days, start, last, left, expired: left <= 0 };
+}
 
 // ── JSONBin ───────────────────────────────────────
 async function jb(mk, method, path, body, extra) {
@@ -386,7 +511,7 @@ const writeLicense = rec => jb(S.secrets.masterKey, 'PUT', binPath(S.secrets.lic
 
 // ── Yönetim kaydı (JSONBin'de, yönetici şifresiyle şifreli) ──
 function adminDefaults() {
-  return { schema: 1, createdAt: new Date().toISOString(), customers: {}, log: [], settings: { v2Write: false, trialDays: 14, months: [1, 3, 6, 12] } };
+  return { schema: 1, createdAt: new Date().toISOString(), customers: {}, log: [], settings: { v2Write: false } };
 }
 async function adminSealWrap(wrapBase, data, key) {
   const box = await seal(key, data, ADMIN_APP);
@@ -394,15 +519,24 @@ async function adminSealWrap(wrapBase, data, key) {
 }
 async function adminOpen(wrap, key) {
   if (!wrap || wrap.app !== ADMIN_APP || !wrap.kdf) throw new Error('Bu bir DigitaraLab yönetim kaydı değil.');
+  if (wrap.moved) { const e = new Error('Yönetim kaydı başka bir JSONBin hesabına taşınmış.'); e.moved = await unseal(key, wrap, ADMIN_APP + '/moved'); throw e; }
   return unseal(key, wrap, ADMIN_APP);
 }
+// Yönetim kaydı ayrı bir JSONBin hesabında olabilir (kendi Master Key'i ile)
+const admMk = () => S.secrets.adminMasterKey || S.secrets.masterKey;
 async function saveAdmin(mutate) {
-  const wrap = await readRecord(S.secrets.masterKey, S.secrets.adminBin);
+  const wrap = await readRecord(admMk(), S.secrets.adminBin);
   const data = await adminOpen(wrap, S.adminKey);
   mutate(data);
   if (data.log.length > MAX_LOG) data.log = data.log.slice(-MAX_LOG);
-  await jb(S.secrets.masterKey, 'PUT', binPath(S.secrets.adminBin), await adminSealWrap(wrap, data, S.adminKey));
+  await jb(admMk(), 'PUT', binPath(S.secrets.adminBin), await adminSealWrap(wrap, data, S.adminKey));
   S.admin = data;
+}
+// Kasadaki bağlantı bilgilerini (aynı tuz, aynı şifre anahtarı) yeniden şifreleyip yazar
+async function saveVault(secrets) {
+  const v = await DB.get('vault'), box = await seal(S.vaultKey, secrets, 'vault');
+  await DB.set('vault', Object.assign({}, v, { iv: box.iv, ct: box.ct }));
+  S.secrets = secrets;
 }
 
 // ── Arayüz yardımcıları ───────────────────────────
@@ -452,14 +586,18 @@ function show(view) { for (const v of ['setup', 'lock', 'main']) $('#v-' + v).cl
 let setupEnv = null, setupAdm = 'new';
 $('#s-env').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; setupEnv = b.dataset.env; for (const x of $('#s-env').children) x.classList.toggle('on', x === b); });
 $('#s-adm').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; setupAdm = b.dataset.adm; for (const x of $('#s-adm').children) x.classList.toggle('on', x === b); $('#s-adm-wrap').classList.toggle('hidden', setupAdm !== 'existing'); });
+$('#s-sep').addEventListener('change', e => $('#s-sep-wrap').classList.toggle('hidden', !e.target.checked));
 $('#s-go').addEventListener('click', async () => {
   const err = m => { $('#s-err').textContent = m; };
   const lic = $('#s-lic').value.trim(), mk = $('#s-mk').value.trim(), admId = $('#s-admid').value.trim();
+  const sep = $('#s-sep').checked, amk = sep ? $('#s-amk').value.trim() : mk;
   const dev = $('#s-dev').value.trim() || 'Cihaz', pw = $('#s-pw').value, pw2 = $('#s-pw2').value;
   const idOk = s => /^[A-Za-z0-9_-]{8,64}$/.test(s);
   if (!setupEnv) return err('Ortamı seçin: Test bin\'i mi, gerçek bin mi?');
   if (!idOk(lic)) return err('Lisans bin kimliği geçersiz görünüyor.');
   if (mk.length < 20 || /\s/.test(mk)) return err('Master Key geçersiz görünüyor.');
+  if (sep && (amk.length < 20 || /\s/.test(amk))) return err('Yönetim hesabının Master Key\'i geçersiz görünüyor.');
+  if (sep && amk === mk) return err('Yönetim hesabının Master Key\'i lisans hesabınınkiyle aynı. Ayrı hesap kullanmıyorsanız kutuyu kaldırın.');
   if (setupAdm === 'existing' && !idOk(admId)) return err('Yönetim kaydı kimliği geçersiz görünüyor.');
   if (setupAdm === 'existing' && admId === lic) return err('Yönetim kaydı lisans kaydıyla aynı olamaz.');
   if (pw.length < 12) return err('Şifre en az 12 karakter olmalı.');
@@ -471,7 +609,7 @@ $('#s-go').addEventListener('click', async () => {
     let adminBin = admId, adminRaw;
     busy('Şifre anahtarı hazırlanıyor…');
     if (setupAdm === 'existing') {
-      const wrap = await readRecord(mk, admId);
+      const wrap = await readRecord(amk, admId);
       if (!wrap || wrap.app !== ADMIN_APP) throw new Error('Bu kimlik bir DigitaraLab yönetim kaydı değil.');
       adminRaw = await pbkdf2(pw, unb64(wrap.kdf.salt), wrap.kdf.iter, 256);
       try { await adminOpen(wrap, await aesKey(adminRaw)); }
@@ -481,18 +619,20 @@ $('#s-go').addEventListener('click', async () => {
       adminRaw = await pbkdf2(pw, salt, VAULT_ITER, 256);
       const wrap = await adminSealWrap({ kdf: { name: 'PBKDF2-SHA256', iter: VAULT_ITER, salt: b64(salt) } }, adminDefaults(), await aesKey(adminRaw));
       busy('Yönetim kaydı oluşturuluyor…');
-      const j = await jb(mk, 'POST', '/b', wrap, { 'X-Bin-Private': 'true', 'X-Bin-Name': 'DigitaraLab-Lisans-Yonetim' });
+      const j = await jb(amk, 'POST', '/b', wrap, { 'X-Bin-Private': 'true', 'X-Bin-Name': 'DigitaraLab-Lisans-Yonetim' });
       adminBin = j && j.metadata && j.metadata.id;
       if (!adminBin) throw new Error('Yönetim kaydı oluşturulamadı.');
     }
     const vsalt = rand(16), vkey = await aesKey(await pbkdf2(pw, vsalt, VAULT_ITER, 256));
     const secrets = { licenseBin: lic, adminBin, masterKey: mk, env: setupEnv, adminKeyRaw: b64(adminRaw) };
+    if (sep) secrets.adminMasterKey = amk;
     const box = await seal(vkey, secrets, 'vault');
     await DB.set('vault', { v: 1, iter: VAULT_ITER, salt: b64(vsalt), iv: box.iv, ct: box.ct });
     await DB.set('device', { id: randChars(6), name: dev });
     await DB.set('guard', { fails: 0, until: 0 });
-    for (const id of ['#s-mk', '#s-pw', '#s-pw2', '#s-lic', '#s-admid']) $(id).value = '';
+    for (const id of ['#s-mk', '#s-amk', '#s-pw', '#s-pw2', '#s-lic', '#s-admid']) $(id).value = '';
     adminRaw.fill(0);
+    try { if (navigator.storage && navigator.storage.persist) await navigator.storage.persist(); } catch (e) {}
     busy(null); toast('✅ Kuruldu. Şimdi şifrenizle kilidi açın.');
     show('lock'); $('#l-pw').focus();
   } catch (e) { busy(null); err(e.message); }
@@ -561,12 +701,32 @@ setInterval(idleCheck, 10000);
 async function reload() {
   busy('Kayıtlar okunuyor…');
   try {
-    const [lic, wrap] = await Promise.all([readLicense(), readRecord(S.secrets.masterKey, S.secrets.adminBin)]);
+    const [lic, wrap] = await Promise.all([readLicense(), readRecord(admMk(), S.secrets.adminBin)]);
     S.base = lic;
     try { S.admin = await adminOpen(wrap, S.adminKey); }
-    catch (e) { S.admin = null; toast('Yönetim kaydı açılamadı: ' + e.message, true); }
+    catch (e) {
+      S.admin = null;
+      if (e.moved) { busy(null); await followMovedAdmin(e.moved); }
+      else toast('Yönetim kaydı açılamadı: ' + e.message, true);
+    }
     renderAll();
   } catch (e) { toast(e.message, true); }
+  finally { busy(null); }
+}
+// Başka cihaz yönetim kaydını yeni hesaba taşıdıysa: yeni hesabın Master Key'i sorulur, kasa güncellenir
+async function followMovedAdmin(m) {
+  const inp = h('input', { type: 'password', autocomplete: 'off', autocapitalize: 'off', spellcheck: false });
+  const ok = await confirmSheet('🏦 Yönetim kaydı taşındı', h('div', {},
+    h('p', { text: 'Yönetim kaydı (günlük, ayarlar) ' + (m.by ? m.by + ' cihazından ' : '') + 'ayrı bir JSONBin hesabına taşınmış. Bu cihazın da yeni kayda bağlanması için yeni hesabın Master Key\'ini girin.' }),
+    h('label', { text: 'Yönetim hesabının Master Key\'i' }), inp), 'Bağlan');
+  if (!ok) return toast('Yönetim kaydına bağlanılmadı: günlük ve ayarlar bu cihazda kapalı.', true);
+  busy('Yeni kayıt kontrol ediliyor…');
+  try {
+    const amk = inp.value.trim(), wrap = await readRecord(amk, m.movedTo);
+    S.admin = await adminOpen(wrap, S.adminKey);
+    await saveVault(Object.assign({}, S.secrets, { adminBin: m.movedTo, adminMasterKey: amk }));
+    toast('✅ Yönetim kaydına bağlandı');
+  } catch (e) { S.admin = null; toast('Bağlanılamadı: ' + e.message, true); }
   finally { busy(null); }
 }
 $('#h-refresh').addEventListener('click', () => reload());
@@ -596,8 +756,18 @@ function matches(key, e, f) {
   const st = status(key, e).f;
   if (f === 'all') return true;
   if (f === 'trial') return key.startsWith('DENEME-');
+  if (f === 'loy') return loyState(e).mode === 'trial';
   if (f === 'active') return st === 'active' || st === 'soon';
   return st === f;
+}
+function moduleTags(e) {
+  const t = [], ls = loyState(e);
+  if (ls.sadakat) t.push(['b-ok', '👤 Sadakat profili · ⭐ dahil']);
+  else if (ls.mode === 'on') t.push(['b-ok', '⭐ Puan Kulübü']);
+  else if (ls.mode === 'trial') t.push(!ls.start ? ['b-warn', '⭐ Puan denemesi · ' + ls.days + ' gün (başlangıç uygulamada)']
+    : ls.expired ? ['b-bad', '⭐ Puan denemesi bitti · ' + fmtDate(ls.last)] : ['b-warn', '⭐ Puan denemesi · ' + ls.left + ' gün kaldı']);
+  if (e.noBranding === true) t.push(['b-off', '🏷️ İbaresiz']);
+  return t.length ? h('div', { class: 'tags' }, t.map(([c, x]) => h('span', { class: 'badge ' + c, text: x }))) : null;
 }
 function renderList() {
   const keys = S.base.keys, q = normName(S.q), qk = S.q.trim().toUpperCase();
@@ -612,10 +782,12 @@ function renderList() {
       h('div', { class: 'top' }, h('div', { class: 'biz', text: e.business || '(adsız)' }), h('span', { class: 'badge ' + st.cls, text: st.text })),
       h('code', { text: k }),
       h('div', { class: 'meta', text: 'Bitiş: ' + fmtDate(e.expiry) + (k.startsWith('DENEME-') ? ' · Deneme' : '') }),
+      moduleTags(e),
       h('div', { class: 'acts' },
         h('button', { class: 'btn', type: 'button', 'data-act': 'copy', 'data-key': k, title: 'Anahtarı kopyala', text: '📋' }),
         h('button', { class: 'btn', type: 'button', 'data-act': 'wa', 'data-key': k, title: 'WhatsApp mesajı', text: '📱' }),
         h('button', { class: 'btn', type: 'button', 'data-act': 'renew', 'data-key': k, text: '🔄 Uzat' }),
+        h('button', { class: 'btn', type: 'button', 'data-act': 'mod', 'data-key': k, title: 'Modüller', text: '🧩' }),
         h('button', { class: 'btn', type: 'button', 'data-act': 'toggle', 'data-key': k, text: e.active ? '🔒 Kapat' : '🔓 Aç' }),
         h('button', { class: 'btn', type: 'button', 'data-act': 'del', 'data-key': k, title: 'Kalıcı sil', text: '🗑️' })));
   }));
@@ -625,7 +797,7 @@ $('#chips').addEventListener('click', e => { const b = e.target.closest('.chip')
 $('#list').addEventListener('click', e => {
   const b = e.target.closest('button[data-act]'); if (!b) return;
   const k = b.dataset.key, ent = S.base.keys[k]; if (!ent) return;
-  ({ copy: () => copyText(k), wa: () => waSheet('info', k, ent), renew: () => renewKey(k), toggle: () => toggleKey(k), del: () => deleteKey(k) })[b.dataset.act]();
+  ({ copy: () => copyText(k), wa: () => waSheet(k.startsWith('DENEME-') ? 'trial' : 'full', k, ent), mod: () => modulesKey(k), renew: () => renewKey(k), toggle: () => toggleKey(k), del: () => deleteKey(k) })[b.dataset.act]();
 });
 
 // ── Güvenli kaydetme ──────────────────────────────
@@ -639,6 +811,8 @@ function validateEntry(k, e, isNew) {
   if ('loyalty' in e && ![true, false, 'trial'].includes(e.loyalty)) bad('"loyalty" yalnız true / "trial" / false olabilir');
   if ('profile' in e && !['', 'sadakat'].includes(e.profile)) bad('"profile" boş ya da "sadakat" olabilir');
   if ('noBranding' in e && typeof e.noBranding !== 'boolean') bad('"noBranding" true/false olmalı');
+  if ('loyaltyTrialStart' in e && !isDate(e.loyaltyTrialStart)) bad('"loyaltyTrialStart" YYYY-AA-GG olmalı');
+  if ('loyaltyTrialDays' in e && !posInt(e.loyaltyTrialDays, 365)) bad('"loyaltyTrialDays" 1–365 arası tam sayı olmalı');
 }
 function checkInvariants(fresh, next, touched, newKeys) {
   const fk = fresh.keys, nk = next.keys;
@@ -654,8 +828,17 @@ function checkInvariants(fresh, next, touched, newKeys) {
   if (Object.keys(fk).length && !Object.keys(nk).length) throw new Error('Lisans listesi boşaltılamaz.');
   for (const k of touched) if (k in nk) validateEntry(k, nk[k], newKeys.includes(k));
 }
-const FIELD = { active: 'Durum', expiry: 'Bitiş', business: 'İşletme', loyalty: 'Puan Kulübü', profile: 'Profil', noBranding: 'İbare', cid: 'Müşteri kimliği', createdAt: 'Oluşturma' };
-const showVal = (f, v) => v === undefined ? '—' : f === 'active' ? (v ? 'Açık' : 'Kapalı') : f === 'expiry' ? fmtDate(v) : typeof v === 'string' ? v : JSON.stringify(v);
+const FIELD = { active: 'Durum', expiry: 'Bitiş', business: 'İşletme', loyalty: 'Puan Kulübü', profile: 'Profil', noBranding: 'İbare', cid: 'Müşteri kimliği', createdAt: 'Oluşturma',
+  loyaltyTrialStart: 'Puan denemesi başlangıcı', loyaltyTrialDays: 'Puan denemesi (gün)' };
+function showVal(f, v) {
+  if (v === undefined) return '—';
+  if (f === 'active') return v ? 'Açık' : 'Kapalı';
+  if (f === 'expiry' || f === 'loyaltyTrialStart') return fmtDate(v);
+  if (f === 'loyalty') return v === true ? 'Aktif' : v === 'trial' ? 'Deneme' : 'Kapalı';
+  if (f === 'noBranding') return v === true ? 'Gizli' : 'Görünür';
+  if (f === 'profile') return v === 'sadakat' ? 'Sadakat' : 'Standart';
+  return typeof v === 'string' ? v : JSON.stringify(v);
+}
 function diffLines(fresh, next, touched) {
   const out = [];
   for (const k of touched) {
@@ -684,7 +867,7 @@ async function backup(rec) {
   list.push({ at: new Date().toISOString(), bin: S.secrets.licenseBin, n: Object.keys(rec.keys).length, iv: box.iv, ct: box.ct });
   await DB.set('backups', list.slice(-MAX_BACKUPS));
 }
-// op: { title, touched:[anahtar], newKeys:[...], mutate(next, fresh), adminMutate?(data, lines), okLabel?, danger? }
+// op: { title, touched:[anahtar], newKeys:[...], mutate(next, fresh), adminMutate?(data, lines), note?:{anahtar: metin}, okLabel?, danger? }
 async function commit(op) {
   const newKeys = op.newKeys || [];
   busy('Güncel kayıt okunuyor…');
@@ -722,7 +905,8 @@ async function commit(op) {
     try {
       await saveAdmin(d => {
         const at = new Date().toISOString();
-        for (const l of lines) d.log.push({ at, dev: S.device.name, act: l.act, key: l.key, biz: l.biz, from: l.from, to: l.to, op: op.title });
+        for (const l of lines) d.log.push(Object.assign({ at, dev: S.device.name, act: l.act, key: l.key, biz: l.biz, from: l.from, to: l.to, op: op.title },
+          op.note && op.note[l.key] ? { note: op.note[l.key] } : {}));
         if (op.adminMutate) op.adminMutate(d, lines);
       });
     } catch (e) { toast('Lisans kaydedildi ama günlük yazılamadı: ' + e.message, true); }
@@ -739,22 +923,119 @@ async function toggleKey(k) {
 }
 async function renewKey(k) {
   const e = S.base.keys[k], from = isDate(e.expiry) && e.expiry > todayKey() ? e.expiry : todayKey();
-  const dateIn = h('input', { type: 'date', value: addMonths(from, 12) });
+  const pk = cfg().packages, def = pk.reduce((a, p) => p.months > a.months ? p : a);
+  let chosen = def;
+  const dateIn = h('input', { type: 'date', value: addMonths(from, def.months) });
   const act = h('input', { type: 'checkbox', checked: !e.active });
-  const mBtns = (S.admin && S.admin.settings && S.admin.settings.months || [1, 3, 6, 12]).map(m => {
-    const b = h('button', { class: 'btn', type: 'button', text: '+' + m + ' ay' });
-    b.addEventListener('click', () => { dateIn.value = addMonths(from, m); }); return b;
-  });
+  const btns = pk.map(p => h('button', { class: 'btn', type: 'button', 'data-m': String(p.months), text: '+' + p.months + ' ay · ' + p.name + ' ' + fmtTL(p.price) }));
+  const paint = () => btns.forEach((b, i) => b.classList.toggle('primary', pk[i] === chosen));
+  btns.forEach((b, i) => b.addEventListener('click', () => { chosen = pk[i]; dateIn.value = addMonths(from, pk[i].months); paint(); }));
+  dateIn.addEventListener('input', () => { chosen = pk.find(p => addMonths(from, p.months) === dateIn.value) || null; paint(); });
+  paint();
   const body = h('div', {}, h('p', { text: e.business + ' · ' + k }),
     h('p', { class: 'muted', text: 'Şu anki bitiş: ' + fmtDate(e.expiry) + (from === todayKey() ? ' (süre dolduğu için bugünden itibaren eklenir)' : '') }),
-    h('div', { class: 'row' }, mBtns), h('label', { text: 'Yeni bitiş tarihi' }), dateIn,
+    h('div', { class: 'row' }, btns), h('label', { text: 'Yeni bitiş tarihi' }), dateIn,
     e.active ? null : h('label', { class: 'check' }, act, h('span', { text: 'Kapalı lisansı da aç' })));
   const exp = await sheet('🔄 Süre uzat', body, [{ label: 'Vazgeç', value: null }, { label: 'Devam', value: () => dateIn.value, cls: 'primary' }]);
   if (!exp) return;
   if (!isDate(exp)) return toast('Geçerli bir tarih seçin.', true);
-  const ok = await commit({ title: '🔄 Süre uzat', touched: [k],
+  const ay = chosen ? chosen.months : monthsBetween(from, exp);
+  const ok = await commit({ title: '🔄 Süre uzat', touched: [k], note: { [k]: chosen ? chosen.name + ' · ' + chosen.months + ' ay · ' + fmtTL(chosen.price) : 'Elle tarih · ~' + ay + ' ay' },
     mutate: n => { if (!n.keys[k]) throw new Error('Kayıt bulunamadı'); n.keys[k].expiry = exp; if (!e.active && act.checked) n.keys[k].active = true; } });
-  if (ok) waSheet('renew', k, S.base.keys[k]);
+  if (ok) waSheet('renew', k, S.base.keys[k], { ay });
+}
+// Şablon değişkenleri: {isletme} {anahtar} {bitis} {ay} {gun}
+function waVars(kind, k, e, extra) {
+  const x = extra || {}, ls = loyTrial(e), today = todayKey();
+  const v = { isletme: e.business, anahtar: k, bitis: fmtDate(e.expiry), ay: '', gun: '' };
+  const fromD = isDate(e.createdAt) && e.createdAt <= e.expiry ? e.createdAt : today;
+  if (kind === 'trial') v.gun = x.gun || Math.max(1, daysBetween(fromD, e.expiry));
+  if (kind === 'full' || kind === 'renew') v.ay = x.ay || (isDate(e.expiry) && e.expiry > today ? monthsBetween(kind === 'renew' ? today : fromD, e.expiry) : '');
+  if (kind === 'loyTrial' || kind === 'loyExpired') {
+    v.gun = x.gun || ls.days || '';
+    if (ls.last) v.bitis = fmtDate(ls.last);
+  }
+  if (!v.ay) v.ay = isDate(e.expiry) && e.expiry > today ? monthsBetween(fromD, e.expiry) : '';
+  if (!v.gun) v.gun = Math.max(0, daysLeft(e.expiry)) || '';
+  return v;
+}
+function waSheet(kind, k, e, extra) {
+  const tpl = cfg().tpl;
+  const sel = h('select', {}, TPL_META.map(([id, l]) => h('option', { value: id, text: l })));
+  sel.value = kind;
+  const ta = h('textarea', { value: fillTpl(tpl[kind], waVars(kind, k, e, extra)) });
+  sel.addEventListener('change', () => { ta.value = fillTpl(tpl[sel.value], waVars(sel.value, k, e, sel.value === kind ? extra : null)); });
+  const open = h('a', { class: 'btn', href: '#', target: '_blank', rel: 'noopener noreferrer', text: '📱 WhatsApp\'ta aç' });
+  open.addEventListener('click', () => { open.href = 'https://wa.me/?text=' + encodeURIComponent(ta.value); });
+  const cp = h('button', { class: 'btn primary', type: 'button', text: '📋 Mesajı kopyala' });
+  cp.addEventListener('click', () => copyText(ta.value));
+  return sheet('📱 WhatsApp mesajı', h('div', {}, h('label', { text: 'Şablon' }), sel, h('label', { text: 'Mesaj (göndermeden önce düzenleyebilirsiniz)' }), ta, h('div', { class: 'row' }, cp, open)), [{ label: 'Kapat', value: true }]);
+}
+
+// ── Seçim yardımcıları ────────────────────────────
+function segEl(opts, cur, onChange) {
+  const el = h('div', { class: 'seg' }, opts.map(([v, l]) => h('button', { type: 'button', 'data-v': v, class: v === cur ? 'on' : '', text: l })));
+  el.addEventListener('click', ev => { const b = ev.target.closest('button'); if (!b) return; for (const x of el.children) x.classList.toggle('on', x === b); onChange(b.dataset.v); });
+  return el;
+}
+// 5 / 7 / 10 / 14 gün düğmeleri + elle gün; get() → gün ya da null (geçersiz)
+function dayPicker(init, onChange) {
+  const inp = h('input', { type: 'number', min: '1', max: '365', inputMode: 'numeric', placeholder: 'Elle (gün)', class: 'dayin', 'aria-label': 'Elle gün sayısı' });
+  let sel = TRIAL_CHOICES.includes(init) ? init : null;
+  if (sel == null) inp.value = String(init);
+  const btns = TRIAL_CHOICES.map(d => h('button', { class: 'btn', type: 'button', 'data-d': String(d), text: d + ' gün' }));
+  const paint = () => btns.forEach(b => b.classList.toggle('primary', Number(b.dataset.d) === sel));
+  btns.forEach(b => b.addEventListener('click', () => { sel = Number(b.dataset.d); inp.value = ''; paint(); if (onChange) onChange(); }));
+  inp.addEventListener('input', () => { sel = null; paint(); if (onChange) onChange(); });
+  paint();
+  return { el: h('div', { class: 'row daypick' }, btns, inp), get: () => inp.value.trim() ? posInt(inp.value, 365) : sel };
+}
+
+// ── Modüller: Puan Kulübü, Sadakat profili, ibare ──
+async function modulesKey(k) {
+  const e = S.base.keys[k], ls = loyTrial(e), c = cfg();
+  let loy = e.loyalty === true ? 'on' : e.loyalty === 'trial' ? 'trial' : 'off';
+  let prof = e.profile === 'sadakat' ? 'sadakat' : '', noBr = e.noBranding === true;
+  const pick = dayPicker(loy === 'trial' && posInt(e.loyaltyTrialDays, 365) ? e.loyaltyTrialDays : c.loyTrialDays);
+  const restart = h('input', { type: 'checkbox' });
+  const curTxt = ls.mode !== 'trial' ? null : !ls.start ? 'Şu an deneme: ' + ls.days + ' gün, başlangıç uygulamada (patron açtığında).'
+    : ls.expired ? 'Şu an: deneme ' + fmtDate(ls.last) + ' tarihinde bitti.' : 'Şu an: deneme, ' + ls.left + ' gün kaldı (son gün ' + fmtDate(ls.last) + ').';
+  const trialBox = h('div', { class: loy === 'trial' ? '' : 'hidden' },
+    curTxt ? h('p', { class: 'muted', text: curTxt }) : null,
+    h('label', { text: 'Deneme süresi' }), pick.el,
+    ls.start ? h('label', { class: 'check' }, restart, h('span', { text: 'Denemeyi bugünden yeniden başlat' })) : null,
+    h('p', { class: 'note', text: ls.start ? 'Gün sayısını değiştirirseniz deneme ilk başladığı günden itibaren sayılır.' : 'Deneme bugünden başlar.' }),
+    h('p', { class: 'note', text: 'Not: DigiPark 0.3.1 gün sayısını okumaz, denemeyi 30 gün sayar.' }));
+  const body = h('div', {}, h('p', { text: e.business + ' · ' + k }),
+    h('label', { text: '⭐ Puan Kulübü' }),
+    segEl([['off', 'Kapalı'], ['trial', 'Deneme'], ['on', 'Aktif']], loy, v => { loy = v; trialBox.classList.toggle('hidden', v !== 'trial'); }),
+    trialBox,
+    h('label', { text: '👤 Profil' }),
+    segEl([['', 'Standart'], ['sadakat', 'Sadakat']], prof, v => { prof = v; }),
+    h('p', { class: 'note', text: 'Sadakat profili: başlık işletme adı olur, Puan Kulübü her zaman açıktır.' }),
+    h('label', { text: '🏷️ "DigiPark ile hazırlanmıştır" ibaresi' }),
+    segEl([['show', 'Görünsün'], ['hide', 'Gizlensin']], noBr ? 'hide' : 'show', v => { noBr = v === 'hide'; }));
+  if (!(await sheet('🧩 Modüller', body, [{ label: 'Vazgeç', value: false }, { label: 'Devam', value: true, cls: 'primary' }]))) return;
+  const days = loy === 'trial' ? pick.get() : null;
+  if (loy === 'trial' && !days) return toast('Deneme gün sayısı 1–365 arası olmalı.', true);
+  const today = todayKey();
+  const ok = await commit({ title: '🧩 Modüller', touched: [k],
+    mutate: n => {
+      const x = n.keys[k]; if (!x) throw new Error('Kayıt bulunamadı');
+      if (loy === 'trial') {
+        const keep = x.loyalty === 'trial' && isDate(x.loyaltyTrialStart) && !restart.checked;
+        x.loyalty = 'trial'; x.loyaltyTrialDays = days; if (!keep) x.loyaltyTrialStart = today;
+      } else {
+        if (loy === 'on') x.loyalty = true; else if ('loyalty' in x) x.loyalty = false;
+        delete x.loyaltyTrialStart; delete x.loyaltyTrialDays;
+      }
+      if (prof === 'sadakat') x.profile = 'sadakat'; else delete x.profile;
+      if (noBr) x.noBranding = true; else delete x.noBranding;
+    } });
+  if (!ok) return;
+  const now = S.base.keys[k];
+  if (loy === 'trial' && (e.loyalty !== 'trial' || e.loyaltyTrialStart !== now.loyaltyTrialStart || e.loyaltyTrialDays !== now.loyaltyTrialDays)) waSheet('loyTrial', k, now, { gun: days });
+  else if (loy === 'on' && e.loyalty !== true) waSheet('loyFull', k, now);
 }
 async function deleteKey(k) {
   const e = S.base.keys[k];
@@ -765,22 +1046,6 @@ async function deleteKey(k) {
   if (inp.value.trim() !== String(e.business).trim()) return toast('İşletme adı eşleşmedi, silinmedi.', true);
   await commit({ title: '🗑️ Kalıcı sil', touched: [k], danger: true, okLabel: 'Sil', mutate: n => { delete n.keys[k]; } });
 }
-function waText(kind, k, e) {
-  const biz = e.business, exp = fmtDate(e.expiry);
-  if (kind === 'renew') return 'Merhaba ' + biz + ',\n\nDigiPark lisansınız ' + exp + ' tarihine kadar uzatıldı. Anahtarınız aynı kalıyor; uygulamayı internet açıkken kapatıp yeniden açmanız yeterli.\n\nİyi çalışmalar dileriz.\nDigitaraLab';
-  if (kind === 'new' && k.startsWith('DENEME-')) return 'Merhaba ' + biz + ',\n\nDigiPark deneme anahtarınız:\n' + k + '\n\nDeneme süreniz ' + exp + ' tarihine kadar geçerlidir. Uygulamayı açıp lisans ekranına bu anahtarı girmeniz yeterli.\n\nDigitaraLab';
-  if (kind === 'new') return 'Merhaba ' + biz + ',\n\nDigiPark lisans anahtarınız:\n' + k + '\n\nLisansınız ' + exp + ' tarihine kadar geçerlidir. Uygulamayı açıp lisans ekranına bu anahtarı girmeniz yeterli.\n\nİyi çalışmalar dileriz.\nDigitaraLab';
-  return 'Merhaba ' + biz + ',\n\nDigiPark lisans anahtarınız: ' + k + '\nGeçerlilik: ' + exp + ' tarihine kadar\n\nDigitaraLab';
-}
-function waSheet(kind, k, e) {
-  const ta = h('textarea', { value: waText(kind, k, e) });
-  const open = h('a', { class: 'btn', href: '#', target: '_blank', rel: 'noopener noreferrer', text: '📱 WhatsApp\'ta aç' });
-  open.addEventListener('click', () => { open.href = 'https://wa.me/?text=' + encodeURIComponent(ta.value); });
-  const cp = h('button', { class: 'btn primary', type: 'button', text: '📋 Mesajı kopyala' });
-  cp.addEventListener('click', () => copyText(ta.value));
-  return sheet('📱 WhatsApp mesajı', h('div', {}, ta, h('div', { class: 'row' }, cp, open)), [{ label: 'Kapat', value: true }]);
-}
-
 // ── Yeni lisans ───────────────────────────────────
 // Müşteri grupları: cid'li kayıtlar kimliğe göre, eski (cid'siz) kayıtlar ada göre
 function customerGroups() {
@@ -809,17 +1074,32 @@ function renderNew() {
   sel.replaceChildren(h('option', { value: '', text: '➕ Yeni müşteri' }),
     ...customerGroups().map(g => h('option', { value: g.id, text: g.name + ' (' + g.keys.length + ' anahtar' + (g.cid ? '' : ', kimliksiz') + ')' })));
   if ([...sel.options].some(o => o.value === cur)) sel.value = cur;
-  const st = S.admin && S.admin.settings || {}, months = st.months || [1, 3, 6, 12], trial = st.trialDays || 14;
-  const opts = S.newType === 'DENEME' ? [{ l: trial + ' gün', d: trial }] : months.map(m => ({ l: m + ' ay', m }));
-  if (!S.newDur || !opts.some(o => o.l === S.newDur)) S.newDur = opts[opts.length - 1].l;
-  $('#n-dur').replaceChildren(...opts.map(o => {
-    const b = h('button', { class: 'btn' + (o.l === S.newDur ? ' primary' : ''), type: 'button', text: o.l });
-    b.addEventListener('click', () => { S.newDur = o.l; $('#n-exp').value = ''; renderNew(); }); return b;
-  }));
-  if (!$('#n-exp').value) { const o = opts.find(x => x.l === S.newDur); $('#n-exp').value = o.d ? addDays(todayKey(), o.d) : addMonths(todayKey(), o.m); }
+  const c = cfg(), box = $('#n-dur');
   for (const b of $('#n-type').children) b.classList.toggle('on', b.dataset.t === S.newType);
+  if (S.newType === 'DENEME') {
+    $('#n-dur-l').textContent = 'Deneme süresi';
+    if (!S.newTrialPick) S.newTrialPick = dayPicker(c.trialDays, () => { const d = S.newTrialPick.get(); if (d) $('#n-exp').value = addDays(todayKey(), d); });
+    box.replaceChildren(S.newTrialPick.el);
+    if (!$('#n-exp').value) $('#n-exp').value = addDays(todayKey(), S.newTrialPick.get() || c.trialDays);
+  } else {
+    $('#n-dur-l').textContent = 'Paket';
+    const pk = c.packages;
+    if (S.newPkg === null || !pk[S.newPkg]) S.newPkg = pk.reduce((b, p, i) => p.months > pk[b].months ? i : b, 0);   // varsayılan: en uzun paket
+    if (!$('#n-exp').value) $('#n-exp').value = addMonths(todayKey(), pk[S.newPkg].months);
+    box.replaceChildren(...pk.map((p, i) => {
+      const b = h('button', { class: 'btn' + (i === S.newPkg && $('#n-exp').value === addMonths(todayKey(), p.months) ? ' primary' : ''), type: 'button', 'data-m': String(p.months), text: p.name + ' · ' + p.months + ' ay · ' + fmtTL(p.price) });
+      b.addEventListener('click', () => { S.newPkg = i; $('#n-exp').value = ''; renderNew(); }); return b;
+    }));
+  }
+  for (const b of $('#n-loy').children) b.classList.toggle('on', b.dataset.l === S.newLoy);
+  if (S.newLoy === 'trial' && !S.newLoyPick) S.newLoyPick = dayPicker(c.loyTrialDays);
+  $('#n-loy-days').replaceChildren(...(S.newLoy === 'trial' ? [h('label', { text: 'Puan Kulübü deneme süresi' }), S.newLoyPick.el] : []));
+  $('#n-loy-days').classList.toggle('hidden', S.newLoy !== 'trial');
   renderCandidates();
 }
+// Tarih elle değişince paket seçimi düşer (fiyat günlüğe "elle" olarak yazılır)
+$('#n-exp').addEventListener('input', () => { if (S.newType === 'DL') for (const b of $('#n-dur').children) b.classList.toggle('primary', $('#n-exp').value === addMonths(todayKey(), Number(b.dataset.m)) && b === $('#n-dur').children[S.newPkg]); });
+$('#n-loy').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; S.newLoy = b.dataset.l; renderNew(); });
 function renderCandidates() {
   const c = newCandidates(), grp = $('#n-cust').value;
   $('#n-prev').replaceChildren(...[
@@ -829,7 +1109,7 @@ function renderCandidates() {
       h('span', {}, h('b', { text: x.e.business }), ' · ', h('span', { class: 'mono', text: x.k }), h('br'),
         h('span', { class: 'muted', text: 'Bitiş ' + fmtDate(x.e.expiry) + ' · ' + (x.checked ? '' : '⚠️ ') + x.why }))))].filter(Boolean));
 }
-$('#n-type').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; S.newType = b.dataset.t; S.newDur = null; $('#n-exp').value = ''; renderNew(); });
+$('#n-type').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; S.newType = b.dataset.t; S.newTrialPick = null; $('#n-exp').value = ''; renderNew(); });
 $('#n-cust').addEventListener('change', () => {
   const g = customerGroups().find(x => x.id === $('#n-cust').value);
   if (g) $('#n-biz').value = g.name;
@@ -838,28 +1118,43 @@ $('#n-cust').addEventListener('change', () => {
 $('#n-biz').addEventListener('input', renderCandidates);
 $('#n-go').addEventListener('click', async () => {
   const err = m => { $('#n-err').textContent = m; };
-  const biz = $('#n-biz').value.trim().replace(/\s+/g, ' '), exp = $('#n-exp').value;
+  const biz = $('#n-biz').value.trim().replace(/\s+/g, ' '), exp = $('#n-exp').value, today = todayKey();
   if (!biz) return err('İşletme adını yazın.');
-  if (!isDate(exp) || exp < todayKey()) return err('Bitiş tarihi bugünden önce olamaz.');
+  if (!isDate(exp) || exp < today) return err('Bitiş tarihi bugünden önce olamaz.');
+  const trialDays = S.newType === 'DENEME' ? S.newTrialPick && S.newTrialPick.get() : null;
+  if (S.newType === 'DENEME' && !trialDays) return err('Deneme gün sayısı 1–365 arası olmalı.');
+  const loyDays = S.newLoy === 'trial' ? S.newLoyPick && S.newLoyPick.get() : null;
+  if (S.newLoy === 'trial' && !loyDays) return err('Puan Kulübü deneme gün sayısı 1–365 arası olmalı.');
   err('');
+  const pkg = S.newType === 'DL' ? cfg().packages[S.newPkg] : null;
+  const pkgOk = pkg && exp === addMonths(today, pkg.months);
+  const ay = pkgOk ? pkg.months : monthsBetween(today, exp), gun = daysBetween(today, exp);
   const grp = customerGroups().find(x => x.id === $('#n-cust').value);
   const cid = grp && grp.cid ? grp.cid : genCid();
   const close = [...$('#n-prev').querySelectorAll('input[data-k]')].filter(i => i.checked).map(i => i.dataset.k);
   const key = genKey(S.newType, S.base.keys);
+  const note = S.newType === 'DENEME' ? 'Deneme · ' + gun + ' gün' : pkgOk ? pkg.name + ' · ' + pkg.months + ' ay · ' + fmtTL(pkg.price) : 'Elle tarih · ~' + ay + ' ay';
   const ok = await commit({ title: '✨ Yeni lisans', touched: [key, ...close], newKeys: [key],
+    note: { [key]: note + (S.newLoy === 'trial' ? ' · ⭐ deneme ' + loyDays + ' gün' : S.newLoy === 'on' ? ' · ⭐ aktif' : '') },
     mutate: n => {
       if (n.keys[key]) throw new Error('Anahtar çakıştı, tekrar deneyin.');
-      n.keys[key] = { active: true, expiry: exp, business: biz, cid, createdAt: todayKey() };
+      const x = { active: true, expiry: exp, business: biz, cid, createdAt: today };
+      if (S.newLoy === 'trial') Object.assign(x, { loyalty: 'trial', loyaltyTrialStart: today, loyaltyTrialDays: loyDays });
+      if (S.newLoy === 'on') x.loyalty = true;
+      n.keys[key] = x;
       for (const k of close) if (n.keys[k]) n.keys[k].active = false;
     },
     adminMutate: d => { d.customers = d.customers || {}; if (!d.customers[cid]) d.customers[cid] = { name: biz, createdAt: new Date().toISOString() }; } });
   if (!ok) return;
-  const e = S.base.keys[key], card = $('#new-result-card');
+  const e = S.base.keys[key], card = $('#new-result-card'), kind = key.startsWith('DENEME-') ? 'trial' : 'full';
   const cpk = h('button', { class: 'btn primary', type: 'button', text: '📋 Anahtarı kopyala' }); cpk.addEventListener('click', () => copyText(key));
-  const wa = h('button', { class: 'btn', type: 'button', text: '📱 WhatsApp mesajı' }); wa.addEventListener('click', () => waSheet('new', key, e));
-  card.replaceChildren(h('h2', { text: '✅ Lisans oluşturuldu' }), h('div', { class: 'muted', text: e.business + ' · bitiş ' + fmtDate(e.expiry) }), h('div', { class: 'bigkey', id: 'new-key', text: key }), h('div', { class: 'row' }, cpk, wa));
+  const wa = h('button', { class: 'btn', type: 'button', text: '📱 WhatsApp mesajı' }); wa.addEventListener('click', () => waSheet(kind, key, e, { ay, gun }));
+  const waL = e.loyalty === 'trial' || e.loyalty === true ? h('button', { class: 'btn', type: 'button', text: '⭐ Puan Kulübü mesajı' }) : null;
+  if (waL) waL.addEventListener('click', () => waSheet(e.loyalty === true ? 'loyFull' : 'loyTrial', key, e, { gun: loyDays }));
+  card.replaceChildren(h('h2', { text: '✅ Lisans oluşturuldu' }), h('div', { class: 'muted', text: e.business + ' · bitiş ' + fmtDate(e.expiry) + ' · ' + note }), h('div', { class: 'bigkey', id: 'new-key', text: key }), h('div', { class: 'row' }, cpk, wa, waL));
   card.classList.add('result'); card.hidden = false;
   $('#n-biz').value = ''; $('#n-cust').value = ''; $('#n-exp').value = '';
+  S.newLoy = 'off'; S.newLoyPick = null; S.newTrialPick = null;
   renderNew(); window.scrollTo(0, 0);
 });
 
@@ -867,11 +1162,12 @@ $('#n-go').addEventListener('click', async () => {
 function renderLog() {
   const q = normName($('#log-q').value), box = $('#log-list');
   if (!S.admin) return box.replaceChildren(h('p', { class: 'muted', text: 'Yönetim kaydı açılamadı.' }));
-  const rows = S.admin.log.slice().reverse().filter(l => !q || normName([l.biz, l.key, l.act, l.dev, l.op, l.from, l.to].join(' ')).includes(q)).slice(0, 300);
+  const rows = S.admin.log.slice().reverse().filter(l => !q || normName([l.biz, l.key, l.act, l.dev, l.op, l.from, l.to, l.note].join(' ')).includes(q)).slice(0, 300);
   box.replaceChildren(...(rows.length ? rows.map(l => h('div', { class: 'log' },
     h('div', {}, h('b', { text: (l.op || l.act) + ' · ' + (l.biz || '') })),
     h('div', { class: 'mono', text: l.key || '' }),
     l.from || l.to ? h('div', { text: (l.from || '—') + ' → ' + (l.to || '—') }) : null,
+    l.note ? h('div', { text: '🏷️ ' + l.note }) : null,
     h('div', { class: 'muted', text: new Date(l.at).toLocaleString('tr-TR') + ' · ' + (l.dev || '') }))) : [h('p', { class: 'muted', text: 'Kayıt yok.' })]));
 }
 $('#log-q').addEventListener('input', renderLog);
@@ -880,12 +1176,14 @@ $('#log-q').addEventListener('input', renderLog);
 const maskId = s => s.length > 8 ? s.slice(0, 4) + '…' + s.slice(-4) : s;
 async function renderSettings() {
   const s = S.secrets;
+  renderPackages(); renderTrials(); renderTpl(); renderLegacy();
   const admBtn = h('button', { class: 'btn', type: 'button', text: '📋 Kopyala' });
   admBtn.addEventListener('click', () => copyText(s.adminBin));
   $('#set-conn').replaceChildren(
     h('b', { text: 'Ortam' }), h('span', { text: s.env === 'real' ? '🏢 Gerçek bin' : '🧪 Test bin\'i' }),
     h('b', { text: 'Lisans kaydı' }), h('span', { class: 'mono', text: maskId(s.licenseBin) }),
     h('b', { text: 'Yönetim kaydı' }), h('span', {}, h('span', { class: 'mono', text: s.adminBin + ' ' }), admBtn),
+    h('b', { text: 'Yönetim hesabı' }), h('span', { text: s.adminMasterKey ? '🏦 Ayrı JSONBin hesabı' : 'Lisans kaydıyla aynı hesap' }),
     h('b', { text: 'Bu cihaz' }), h('span', { text: S.device.name }),
     h('b', { text: 'Lisans sayısı' }), h('span', { text: String(Object.keys(S.base.keys).length) }));
   $('#set-v2').checked = !!(S.admin && S.admin.settings && S.admin.settings.v2Write);
@@ -900,6 +1198,176 @@ async function renderSettings() {
       h('div', { style: 'flex:1' }, h('div', { text: new Date(b.at).toLocaleString('tr-TR') }), h('div', { class: 'muted', text: b.n + ' lisans · ' + maskId(b.bin) })), btn);
   }) : [h('p', { class: 'muted', text: 'Henüz yedek yok.' })]));
 }
+async function saveSetting(label, fn) {
+  busy('Kaydediliyor…');
+  try {
+    await saveAdmin(d => { d.settings = d.settings || {}; fn(d.settings); d.log.push({ at: new Date().toISOString(), dev: S.device.name, act: 'ayar', op: label }); });
+    toast('✅ ' + label); return true;
+  } catch (e) { toast(e.message, true); return false; } finally { busy(null); }
+}
+const needAdmin = () => { if (S.admin) return true; toast('Yönetim kaydı açılamadı; ayarlar kaydedilemez.', true); return false; };
+
+// Paketler
+function pkgRow(p) {
+  const del = h('button', { class: 'btn', type: 'button', title: 'Sil', 'aria-label': 'Paketi sil', text: '✕' });
+  const row = h('div', { class: 'pkgrow' },
+    h('input', { type: 'text', value: p.name, maxLength: 30, 'data-f': 'name', 'aria-label': 'Paket adı' }),
+    h('input', { type: 'number', value: String(p.months), min: '1', max: '120', inputMode: 'numeric', 'data-f': 'months', 'aria-label': 'Ay' }),
+    h('input', { type: 'number', value: String(p.price), min: '0', step: '1', inputMode: 'numeric', 'data-f': 'price', 'aria-label': 'Fiyat' }), del);
+  del.addEventListener('click', () => row.remove());
+  return row;
+}
+function renderPackages(list) { $('#set-pk').replaceChildren(...(list || cfg().packages).map(pkgRow)); }
+$('#set-pk-add').addEventListener('click', () => { if ($('#set-pk').children.length >= 8) return toast('En fazla 8 paket.', true); $('#set-pk').append(pkgRow({ name: '', months: 1, price: 0 })); });
+$('#set-pk-def').addEventListener('click', () => renderPackages(DEFAULT_PACKAGES));
+$('#set-pk-save').addEventListener('click', async () => {
+  if (!needAdmin()) return;
+  const rows = [...$('#set-pk').children].map(r => { const g = f => r.querySelector('[data-f="' + f + '"]').value.trim(); return { name: g('name'), months: posInt(g('months'), 120), price: g('price') === '' ? NaN : Number(g('price')) }; });
+  if (!rows.length) return toast('En az bir paket olmalı.', true);
+  const bad = rows.findIndex(r => !r.name || !r.months || !Number.isInteger(r.price) || r.price < 0);
+  if (bad >= 0) return toast((bad + 1) + '. pakette hata: ad boş olamaz, ay 1–120, fiyat 0 ya da üstü tam sayı olmalı.', true);
+  const pk = cleanPackages(rows);
+  if (await saveSetting('Paketler güncellendi', st => { st.packages = pk; })) { S.newPkg = null; renderPackages(); }
+});
+
+// Deneme süreleri
+function renderTrials() { const c = cfg(); $('#set-td').value = c.trialDays; $('#set-ltd').value = c.loyTrialDays; }
+$('#set-trial-save').addEventListener('click', async () => {
+  if (!needAdmin()) return;
+  const td = posInt($('#set-td').value, 365), ltd = posInt($('#set-ltd').value, 365);
+  if (!td || !ltd) return toast('Gün sayısı 1–365 arası tam sayı olmalı.', true);
+  if (await saveSetting('Deneme süreleri: ana ' + td + ' gün, Puan Kulübü ' + ltd + ' gün', st => { st.trialDays = td; st.loyTrialDays = ltd; })) { S.newTrialPick = S.newLoyPick = null; renderTrials(); }
+});
+
+// WhatsApp şablonları
+const SAMPLE = { isletme: 'Örnek Oyun Parkı', anahtar: 'DL-AB12-CD34-EF56', bitis: '15.04.2027', ay: 6, gun: 7 };
+function renderTpl() {
+  const sel = $('#set-tpl-k'), cur = sel.value || 'trial', c = cfg();
+  const own = (S.admin && S.admin.settings && S.admin.settings.tpl) || {};
+  sel.replaceChildren(...TPL_META.map(([id, l]) => h('option', { value: id, text: l + (typeof own[id] === 'string' && own[id] !== DEFAULT_TPL[id] ? ' (düzenlendi)' : '') })));
+  sel.value = cur;
+  $('#set-tpl-t').value = c.tpl[cur];
+  tplPreview();
+}
+function tplPreview() { $('#set-tpl-prev').textContent = fillTpl($('#set-tpl-t').value, SAMPLE); }
+$('#set-tpl-vars').replaceChildren(...TPL_VARS.map(v => h('button', { class: 'chip', type: 'button', 'data-v': v, text: '{' + v + '}' })));
+$('#set-tpl-vars').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  const ta = $('#set-tpl-t'), ins = '{' + b.dataset.v + '}', a = ta.selectionStart, z = ta.selectionEnd;
+  ta.value = ta.value.slice(0, a) + ins + ta.value.slice(z); ta.focus(); ta.selectionStart = ta.selectionEnd = a + ins.length; tplPreview();
+});
+$('#set-tpl-k').addEventListener('change', () => { $('#set-tpl-t').value = cfg().tpl[$('#set-tpl-k').value]; tplPreview(); });
+$('#set-tpl-t').addEventListener('input', tplPreview);
+$('#set-tpl-def').addEventListener('click', () => { $('#set-tpl-t').value = DEFAULT_TPL[$('#set-tpl-k').value]; tplPreview(); toast('Varsayılan metin yüklendi; kalıcı olması için Kaydet.'); });
+$('#set-tpl-save').addEventListener('click', async () => {
+  if (!needAdmin()) return;
+  const id = $('#set-tpl-k').value, t = $('#set-tpl-t').value.replace(/\r\n/g, '\n');
+  if (!t.trim()) return toast('Şablon boş olamaz.', true);
+  if (t.length > 4000) return toast('Şablon en fazla 4000 karakter olabilir.', true);
+  const unknown = [...t.matchAll(/\{([^{}\s]{1,20})\}/g)].map(m => m[1]).filter(v => !TPL_VARS.includes(v));
+  if (unknown.length) return toast('Bilinmeyen değişken: {' + unknown[0] + '}. Kullanılabilenler: ' + TPL_VARS.map(v => '{' + v + '}').join(' '), true);
+  const label = TPL_META.find(x => x[0] === id)[1];
+  if (await saveSetting('Şablon güncellendi: ' + label, st => { st.tpl = Object.assign({}, st.tpl); if (t === DEFAULT_TPL[id]) delete st.tpl[id]; else st.tpl[id] = t; })) renderTpl();
+});
+
+// Eski (müşteri kimliği olmayan) kayıtları adla gruplama — yalnız işaretlenenler bağlanır
+function legacyGroups() {
+  const keys = S.base.keys, loose = Object.keys(keys).filter(k => keys[k] && typeof keys[k] === 'object' && !keys[k].cid);
+  const parent = new Map(loose.map(k => [k, k]));
+  const find = k => { while (parent.get(k) !== k) k = parent.get(k); return k; };
+  for (let i = 0; i < loose.length; i++) for (let j = i + 1; j < loose.length; j++)
+    if (sameName(keys[loose[i]].business, keys[loose[j]].business)) parent.set(find(loose[j]), find(loose[i]));
+  const groups = new Map();
+  for (const k of loose) { const r = find(k); if (!groups.has(r)) groups.set(r, []); groups.get(r).push(k); }
+  const cidGroups = customerGroups().filter(g => g.cid);
+  return [...groups.values()].map(ks => ({ keys: ks.sort((a, b) => String(keys[a].expiry).localeCompare(String(keys[b].expiry))),
+    cands: cidGroups.filter(g => ks.some(k => sameName(g.name, keys[k].business))) }))
+    .filter(g => g.keys.length > 1 || g.cands.length)
+    .sort((a, b) => String(keys[a.keys[0]].business).localeCompare(String(keys[b.keys[0]].business), 'tr'));
+}
+function renderLegacy() {
+  const keys = S.base.keys, gs = legacyGroups(), box = $('#set-legacy');
+  const loose = Object.values(keys).filter(e => e && typeof e === 'object' && !e.cid).length;
+  if (!gs.length) return box.replaceChildren(h('p', { class: 'muted', text: loose ? 'Adı benzeyen kimliksiz kayıt yok (' + loose + ' kimliksiz anahtar tek başına).' : 'Tüm anahtarların müşteri kimliği var.' }));
+  box.replaceChildren(h('p', { class: 'muted', text: gs.length + ' olası grup · ' + loose + ' kimliksiz anahtar' }), ...gs.map((g, gi) => {
+    const target = h('select', { 'data-g': String(gi) }, h('option', { value: '', text: '➕ Yeni müşteri kimliği' }), g.cands.map(c => h('option', { value: c.cid, text: c.name + ' (' + c.keys.length + ' anahtar, ' + c.cid + ')' })));
+    const go = h('button', { class: 'btn primary block', type: 'button', text: '🔗 İşaretlileri aynı müşteri yap' });
+    const el = h('div', { class: 'grp' }, h('h4', { text: keys[g.keys[0]].business }),
+      ...g.keys.map(k => h('label', { class: 'check' }, h('input', { type: 'checkbox', 'data-k': k }),
+        h('span', {}, h('b', { text: keys[k].business }), ' · ', h('span', { class: 'mono', text: k }), h('br'),
+          h('span', { class: 'muted', text: 'Bitiş ' + fmtDate(keys[k].expiry) + ' · ' + (keys[k].active ? 'Açık' : 'Kapalı') })))),
+      g.cands.length ? [h('label', { text: 'Bağlanacak müşteri' }), target] : null, h('div', { style: 'margin-top:8px' }, go));
+    go.addEventListener('click', () => linkLegacy(el, g.cands.length ? target.value : ''));
+    return el;
+  }));
+}
+async function linkLegacy(el, toCid) {
+  const ks = [...el.querySelectorAll('input[data-k]')].filter(i => i.checked).map(i => i.dataset.k);
+  if (!ks.length) return toast('Önce aynı işletmeye ait anahtarları işaretleyin.', true);
+  if (!toCid && ks.length < 2) return toast('Yeni müşteri için en az iki anahtar işaretleyin ya da var olan müşteriyi seçin.', true);
+  const cid = toCid || genCid(), name = S.base.keys[ks[0]].business;
+  await commit({ title: '🔗 Eski kayıtları müşteriye bağla', touched: ks,
+    mutate: n => { for (const k of ks) { if (!n.keys[k]) throw new Error('Kayıt bulunamadı: ' + k); if (n.keys[k].cid) throw new Error(k + ' zaten bir müşteriye bağlı.'); n.keys[k].cid = cid; } },
+    adminMutate: d => { d.customers = d.customers || {}; if (!d.customers[cid]) d.customers[cid] = { name, createdAt: new Date().toISOString(), linked: true }; } });
+}
+
+// Master Key güncelleme (JSONBin'de anahtar yenilendiğinde) ve yönetim kaydını ayrı hesaba taşıma
+$('#set-mk').addEventListener('click', async () => {
+  const which = h('select', {}, h('option', { value: 'lic', text: 'Lisans kaydının hesabı' }), S.secrets.adminMasterKey ? h('option', { value: 'adm', text: 'Yönetim kaydının hesabı' }) : null);
+  const inp = h('input', { type: 'password', autocomplete: 'off', autocapitalize: 'off', spellcheck: false });
+  const ok = await confirmSheet('🔑 Master Key\'i güncelle', h('div', {},
+    h('p', { class: 'muted', text: 'JSONBin\'de Master Key\'i yenilediyseniz yenisini buraya girin. Kayıt yeni anahtarla okunabiliyorsa bu cihazın kasasına şifreli olarak yazılır. Her cihazda ayrı yapılır.' }),
+    h('label', { text: 'Hangi hesap' }), which, h('label', { text: 'Yeni Master Key' }), inp), 'Kontrol et ve kaydet');
+  if (!ok) return;
+  const mk = inp.value.trim();
+  if (mk.length < 20 || /\s/.test(mk)) return toast('Master Key geçersiz görünüyor.', true);
+  busy('Kontrol ediliyor…');
+  try {
+    const next = Object.assign({}, S.secrets);
+    if (which.value === 'adm') { await adminOpen(await readRecord(mk, S.secrets.adminBin), S.adminKey); next.adminMasterKey = mk; }
+    else {
+      const r = await readRecord(mk, S.secrets.licenseBin);
+      if (!r || !r.keys) throw new Error('Bu anahtarla lisans kaydı okunamadı.');
+      if (!next.adminMasterKey) await adminOpen(await readRecord(mk, S.secrets.adminBin), S.adminKey);
+      next.masterKey = mk;
+    }
+    await saveVault(next);
+    try { await saveAdmin(d => d.log.push({ at: new Date().toISOString(), dev: S.device.name, act: 'ayar', op: 'Master Key güncellendi (' + (which.value === 'adm' ? 'yönetim' : 'lisans') + ' hesabı)' })); } catch (e) {}
+    toast('✅ Master Key güncellendi');
+  } catch (e) { toast('Güncellenmedi: ' + e.message, true); }
+  finally { busy(null); renderSettings(); }
+});
+$('#set-move').addEventListener('click', async () => {
+  if (!needAdmin()) return;
+  const inp = h('input', { type: 'password', autocomplete: 'off', autocapitalize: 'off', spellcheck: false });
+  const ok = await confirmSheet('🏦 Yönetim kaydını taşı', h('div', {},
+    h('p', { text: 'Günlük, müşteri kimlikleri ve ayarlar başka bir JSONBin hesabına (ör. yalnız yönetim için açılmış hesap) taşınır. Eski kayıtta yalnız şifreli bir "taşındı" işareti kalır.' }),
+    h('p', { class: 'muted', text: 'Diğer cihazlar sonraki açılışta yeni hesabın Master Key\'ini sorar. Lisans kaydı yerinde kalır.' }),
+    h('label', { text: 'Yeni hesabın Master Key\'i' }), inp), 'Taşı');
+  if (!ok) return;
+  const amk = inp.value.trim();
+  if (amk.length < 20 || /\s/.test(amk)) return toast('Master Key geçersiz görünüyor.', true);
+  if (amk === admMk()) return toast('Bu, yönetim kaydının şu anki hesabı.', true);
+  busy('Taşınıyor…');
+  try {
+    const oldId = S.secrets.adminBin, oldMk = admMk();
+    const wrap = await readRecord(oldMk, oldId), data = await adminOpen(wrap, S.adminKey);
+    data.log.push({ at: new Date().toISOString(), dev: S.device.name, act: 'ayar', op: 'Yönetim kaydı ayrı JSONBin hesabına taşındı' });
+    const j = await jb(amk, 'POST', '/b', await adminSealWrap(wrap, data, S.adminKey), { 'X-Bin-Private': 'true', 'X-Bin-Name': 'DigitaraLab-Lisans-Yonetim' });
+    const newId = j && j.metadata && j.metadata.id;
+    if (!newId) throw new Error('Yeni hesapta kayıt oluşturulamadı.');
+    const back = await adminOpen(await readRecord(amk, newId), S.adminKey);
+    if (!eq(back, data)) throw new Error('Yeni kayıt doğrulanamadı; eski kayıt olduğu gibi duruyor.');
+    await saveVault(Object.assign({}, S.secrets, { adminBin: newId, adminMasterKey: amk }));
+    S.admin = data;
+    const box = await seal(S.adminKey, { movedTo: newId, at: new Date().toISOString(), by: S.device.name }, ADMIN_APP + '/moved');
+    try { await jb(oldMk, 'PUT', binPath(oldId), { app: ADMIN_APP, schema: 1, kdf: wrap.kdf, moved: true, iv: box.iv, ct: box.ct }); }
+    catch (e) { toast('Taşındı, ama eski kayda "taşındı" işareti yazılamadı: ' + e.message + '. Diğer cihazlarda kurulumu yenileyin.', true); return; }
+    toast('✅ Yönetim kaydı yeni hesaba taşındı');
+  } catch (e) { toast('Taşınmadı: ' + e.message, true); }
+  finally { busy(null); renderSettings(); }
+});
+
 $('#set-fullbak').addEventListener('click', async () => {
   busy('Okunuyor…');
   try { download('lisans-tam-yedek-' + stamp() + '.json', await readLicense()); } catch (e) { toast(e.message, true); } finally { busy(null); }
@@ -950,6 +1418,8 @@ $('#set-v2all').addEventListener('click', async () => {
 (async () => {
   try { show((await DB.get('vault')) ? 'lock' : 'setup'); }
   catch (e) { show('setup'); $('#s-err').textContent = 'Bu tarayıcı cihaz kasasını açamadı (özel pencere olabilir).'; }
+  // Ana ekrana eklenebilir uygulama: kabuk dosyaları önbellekte; JSONBin istekleri hiçbir zaman önbelleğe girmez
+  if ('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('sw.js').catch(() => {});
 })();
 </script>
 </body>

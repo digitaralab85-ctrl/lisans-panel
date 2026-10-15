@@ -13,3 +13,17 @@ Bin kimlikleri ve JSONBin Master Key kurulumda girilir. Yönetici şifresinden P
 - `v2`: anahtardan türetilen kimlik (PBKDF2-SHA256, 200.000 tur, tuz `DigitaraLab/DigiPark/lisans/v2`,
   64 bayt: ilk 16 bayt kimlik (hex), sonraki 32 bayt AES-GCM anahtarı). Değer `base64(iv[12] ‖ şifreli)`
   biçimindedir, AAD olarak kimlik kullanılır, içerik `{v:2, ...kayıt}` şeklindedir.
+
+## Oturum 2 (0.3.2)
+
+- **Modüller** (kartta 🧩): Puan Kulübü `loyalty` = `false` / `"trial"` / `true`; deneme için `loyaltyTrialStart`
+  (YYYY-AA-GG) ve `loyaltyTrialDays` (1–365) yazılır. `profile: "sadakat"`, `noBranding: true` (ibare gizli).
+- **Ayarlar** (yönetim kaydında, şifreli): paketler (ad/ay/fiyat), deneme varsayılanları (ana 7, Puan Kulübü 14 gün),
+  WhatsApp şablonları (`{isletme} {anahtar} {bitis} {ay} {gun}`). Fiyat yalnız günlüğe yazılır.
+- **Eski kayıtları müşteriye bağla**: kimliksiz anahtarlar ada göre gruplanır, yalnız işaretlenenlere `cid` yazılır.
+- **Yönetim kaydı ayrı hesapta**: kurulumda ya da Ayarlar › Yönetim kaydını taşı. Eski kayıtta yalnız şifreli
+  "taşındı" işareti kalır; diğer cihazlar açılışta yeni hesabın Master Key'ini sorar. Master Key yenilenirse
+  Ayarlar › Master Key'i güncelle (her cihazda).
+- **PWA**: `manifest.webmanifest`, `sw.js` (derlemede `src/sw.js`'ten, sürüm damgalı), `icons/`.
+  İkonlar `src/icon.svg`'den: `node scripts/ikonlar.mjs` (Chrome + puppeteer-core gerekir).
+- **Commit öncesi**: `node scripts/sir-tarama.mjs [--karsi <dosya>]` — değer yazdırmadan sır arar.
