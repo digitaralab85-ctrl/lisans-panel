@@ -1,0 +1,956 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-l1CPX+mMidmJGeGsAr3jpKijO6JTWV33EQfn681PeIg='; style-src 'unsafe-inline'; connect-src https://api.jsonbin.io; img-src 'self' data:; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#0f2a44">
+<title>DigitaraLab Lisans</title>
+<style>
+:root{
+  --bg:#f3f5f8; --card:#fff; --ink:#14212e; --muted:#5b6b7b; --line:#dde3ea;
+  --brand:#0f2a44; --accent:#127a6e; --accent-ink:#fff;
+  --ok:#1e7d3a; --ok-bg:#e5f4ea; --warn:#9a5b00; --warn-bg:#fff1d6; --bad:#b3261e; --bad-bg:#fde7e5;
+  --off:#5b6b7b; --off-bg:#eceff3; --test:#8a5a00; --test-bg:#ffe08a;
+  --r:14px; --tap:48px;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#0e141b; --card:#18212b; --ink:#e8eef4; --muted:#9aa9b8; --line:#2a3644;
+    --brand:#0b1e31; --accent:#2fa597; --ok:#6fd08c; --ok-bg:#16301f; --warn:#f0b54d; --warn-bg:#3a2a0c;
+    --bad:#ff8a80; --bad-bg:#3b1715; --off:#9aa9b8; --off-bg:#222c37; --test-bg:#5a4300; --test:#ffe08a; }
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;-webkit-text-size-adjust:100%}
+button,input,select,textarea{font:inherit;color:inherit}
+.hidden{display:none!important}
+header{position:sticky;top:0;z-index:5;background:var(--brand);color:#fff;padding:calc(env(safe-area-inset-top) + 10px) 16px 10px;display:flex;align-items:center;gap:10px}
+header h1{font-size:17px;margin:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.env{font-size:12px;font-weight:800;letter-spacing:.06em;padding:3px 8px;border-radius:999px}
+.env.test{background:var(--test-bg);color:#5a3b00}
+.env.real{background:#ff5a4e;color:#fff}
+.hbtn{background:rgba(255,255,255,.12);border:0;color:#fff;min-width:44px;height:44px;border-radius:12px;font-size:18px;cursor:pointer}
+main{max-width:760px;margin:0 auto;padding:14px 16px calc(96px + env(safe-area-inset-bottom))}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px;margin:0 0 12px}
+.card h2{font-size:17px;margin:0 0 10px}
+.muted{color:var(--muted);font-size:14px}
+label{display:block;font-size:14px;font-weight:600;margin:12px 0 6px}
+input[type=text],input[type=password],input[type=date],input[type=number],input[type=search],select,textarea{width:100%;min-height:var(--tap);padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--card)}
+textarea{min-height:150px;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:1px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:var(--tap);padding:0 16px;border-radius:12px;border:1px solid var(--line);background:var(--card);font-weight:650;cursor:pointer;text-decoration:none;color:var(--ink)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.danger{background:var(--bad);border-color:var(--bad);color:#fff}
+.btn.block{width:100%}
+.btn:disabled{opacity:.5;cursor:default}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.row>.btn{flex:1 1 auto}
+.chips{display:flex;gap:6px;overflow-x:auto;padding:2px 0 10px;scrollbar-width:none}
+.chip{flex:0 0 auto;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:8px 12px;font-size:14px;cursor:pointer;min-height:40px}
+.chip.on{background:var(--ink);color:var(--card);border-color:var(--ink)}
+.seg{display:flex;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.seg button{flex:1;min-height:var(--tap);border:0;background:var(--card);cursor:pointer;font-weight:600}
+.seg button.on{background:var(--accent);color:#fff}
+.lic{padding:12px 14px}
+.lic .top{display:flex;align-items:flex-start;gap:8px}
+.lic .biz{font-weight:700;font-size:16px;flex:1;word-break:break-word}
+.lic code{font:600 14px/1.3 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.02em;word-break:break-all}
+.lic .meta{font-size:14px;color:var(--muted);margin:4px 0 10px}
+.lic .acts{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.lic .acts .btn{padding:0 4px;font-size:14px;min-height:44px}
+.badge{font-size:12px;font-weight:700;padding:3px 8px;border-radius:999px;white-space:nowrap}
+.b-ok{background:var(--ok-bg);color:var(--ok)} .b-warn{background:var(--warn-bg);color:var(--warn)}
+.b-bad{background:var(--bad-bg);color:var(--bad)} .b-off{background:var(--off-bg);color:var(--off)}
+nav{position:fixed;left:0;right:0;bottom:0;z-index:5;background:var(--card);border-top:1px solid var(--line);display:flex;padding-bottom:env(safe-area-inset-bottom)}
+nav button{flex:1;border:0;background:none;min-height:60px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+nav button span{font-size:20px}
+nav button.on{color:var(--accent)}
+.center{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px 16px}
+.center .card{width:100%;max-width:440px}
+.logo{font-size:40px;text-align:center}
+.err{color:var(--bad);font-size:14px;min-height:20px;margin:8px 0 0}
+.overlay{position:fixed;inset:0;background:rgba(5,12,20,.55);z-index:20;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--card);width:100%;max-width:560px;max-height:90vh;overflow:auto;border-radius:18px 18px 0 0;padding:18px 16px calc(16px + env(safe-area-inset-bottom))}
+@media (min-width:700px){.overlay{align-items:center}.sheet{border-radius:18px}}
+.sheet h3{margin:0 0 10px;font-size:18px}
+.sheet ul{padding-left:20px;margin:8px 0}
+.sheet li{margin:4px 0;word-break:break-word}
+.sheet .row{margin-top:14px}
+.check{display:flex;gap:10px;align-items:flex-start;padding:10px;border:1px solid var(--line);border-radius:12px;margin:6px 0;font-weight:500}
+.check input{width:22px;height:22px;flex:0 0 auto;margin-top:1px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(80px + env(safe-area-inset-bottom));z-index:30;background:var(--ink);color:var(--card);padding:12px 16px;border-radius:12px;max-width:92vw;font-size:15px;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+.toast.bad{background:var(--bad);color:#fff}
+.busy{position:fixed;inset:0;z-index:40;background:rgba(5,12,20,.35);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:16px}
+.busy div{background:var(--brand);padding:16px 20px;border-radius:14px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:14px}
+.kv b{font-weight:600;color:var(--muted)}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;word-break:break-all}
+.result{border:2px solid var(--accent)}
+.bigkey{font:700 20px/1.3 ui-monospace,SFMono-Regular,Menlo,monospace;text-align:center;padding:12px;background:var(--bg);border-radius:12px;margin:8px 0;word-break:break-all}
+.log{font-size:14px;border-bottom:1px solid var(--line);padding:8px 0}
+.log:last-child{border-bottom:0}
+footer{text-align:center;font-size:12px;color:var(--muted);padding:8px 0 0;word-break:break-all}
+</style>
+</head>
+<body>
+
+<!-- KURULUM -->
+<section id="v-setup" class="center hidden">
+  <div class="card">
+    <div class="logo">🛡️</div>
+    <h2 style="text-align:center">DigitaraLab Lisans — Kurulum</h2>
+    <p class="muted">Bilgiler yalnız bu cihazda, yönetici şifrenizle şifreli olarak saklanır. Sayfanın kodunda hiçbir gizli bilgi yoktur.</p>
+    <label>Ortam</label>
+    <div class="seg" id="s-env"><button type="button" data-env="test">🧪 Test bin'i</button><button type="button" data-env="real">🏢 Gerçek bin</button></div>
+    <label for="s-lic">Lisans kaydı (bin) kimliği</label>
+    <input id="s-lic" type="text" autocomplete="off" autocapitalize="off" spellcheck="false">
+    <label for="s-mk">JSONBin Master Key</label>
+    <input id="s-mk" type="password" autocomplete="off" autocapitalize="off" spellcheck="false">
+    <label>Yönetim kaydı (şifreli günlük ve müşteri kimlikleri)</label>
+    <div class="seg" id="s-adm"><button type="button" data-adm="new" class="on">Yeni oluştur</button><button type="button" data-adm="existing">Var olanı kullan</button></div>
+    <div id="s-adm-wrap" class="hidden">
+      <label for="s-admid">Yönetim kaydı kimliği (diğer cihazda Ayarlar'da yazar)</label>
+      <input id="s-admid" type="text" autocomplete="off" autocapitalize="off" spellcheck="false">
+    </div>
+    <label for="s-dev">Bu cihazın adı (günlükte görünür)</label>
+    <input id="s-dev" type="text" placeholder="ör. Telefon, Mac" maxlength="24">
+    <label for="s-pw">Yönetici şifresi (en az 12 karakter, tüm cihazlarda aynı)</label>
+    <input id="s-pw" type="password" autocomplete="new-password">
+    <label for="s-pw2">Şifre tekrar</label>
+    <input id="s-pw2" type="password" autocomplete="new-password">
+    <p class="err" id="s-err"></p>
+    <button class="btn primary block" id="s-go" type="button">Kur ve kilitle</button>
+  </div>
+</section>
+
+<!-- KİLİT -->
+<section id="v-lock" class="center hidden">
+  <div class="card">
+    <div class="logo">🔐</div>
+    <h2 style="text-align:center">DigitaraLab Lisans</h2>
+    <label for="l-pw">Yönetici şifresi</label>
+    <input id="l-pw" type="password" autocomplete="current-password">
+    <p class="err" id="l-err"></p>
+    <button class="btn primary block" id="l-go" type="button">Kilidi aç</button>
+    <p style="text-align:center;margin:18px 0 0"><button class="btn" id="l-forget" type="button">Bu cihazı unut</button></p>
+  </div>
+</section>
+
+<!-- ANA EKRAN -->
+<section id="v-main" class="hidden">
+  <header>
+    <h1>🛡️ DigitaraLab Lisans</h1>
+    <span class="env" id="h-env"></span>
+    <button class="hbtn" id="h-refresh" type="button" title="Yenile" aria-label="Yenile">🔄</button>
+    <button class="hbtn" id="h-lock" type="button" title="Kilitle" aria-label="Kilitle">🔒</button>
+  </header>
+  <main>
+    <!-- Müşteriler -->
+    <div id="t-list">
+      <input id="q" type="search" placeholder="🔍 İşletme adı veya anahtar ara" autocomplete="off">
+      <div class="chips" id="chips" style="margin-top:10px">
+        <button class="chip on" data-f="all">Tümü</button><button class="chip" data-f="active">Aktif</button>
+        <button class="chip" data-f="soon">7 gün içinde bitecek</button><button class="chip" data-f="expired">Süresi dolan</button>
+        <button class="chip" data-f="closed">Kapalı</button><button class="chip" data-f="trial">Deneme</button>
+      </div>
+      <p class="muted" id="list-info"></p>
+      <div id="list"></div>
+    </div>
+
+    <!-- Yeni -->
+    <div id="t-new" class="hidden">
+      <div class="card" id="new-result-card" hidden></div>
+      <div class="card">
+        <h2>✨ Yeni lisans</h2>
+        <label for="n-cust">Müşteri</label>
+        <select id="n-cust"></select>
+        <label for="n-biz">İşletme adı</label>
+        <input id="n-biz" type="text" maxlength="80" autocomplete="off">
+        <label>Tür</label>
+        <div class="seg" id="n-type"><button type="button" data-t="DL" class="on">Tam lisans (DL-)</button><button type="button" data-t="DENEME">Deneme (DENEME-)</button></div>
+        <label>Süre</label>
+        <div class="row" id="n-dur"></div>
+        <label for="n-exp">Bitiş tarihi</label>
+        <input id="n-exp" type="date">
+        <div id="n-prev"></div>
+        <p class="err" id="n-err"></p>
+        <button class="btn primary block" id="n-go" type="button" style="margin-top:8px">🔐 Anahtar oluştur ve kaydet</button>
+      </div>
+    </div>
+
+    <!-- Günlük -->
+    <div id="t-log" class="hidden">
+      <div class="card">
+        <h2>🧾 İşlem günlüğü</h2>
+        <input id="log-q" type="search" placeholder="🔍 Müşteri, anahtar, işlem veya cihaz" autocomplete="off">
+        <div id="log-list" style="margin-top:8px"></div>
+      </div>
+    </div>
+
+    <!-- Ayarlar -->
+    <div id="t-set" class="hidden">
+      <div class="card">
+        <h2>🔗 Bağlantı</h2>
+        <div class="kv" id="set-conn"></div>
+      </div>
+      <div class="card">
+        <h2>💾 Yedekler (bu cihazda, şifreli)</h2>
+        <p class="muted">Her kayıttan hemen önce lisans kaydının önceki hâli saklanır (son 20).</p>
+        <button class="btn block" id="set-fullbak" type="button">⬇️ Şu anki kaydın tam yedeğini indir</button>
+        <div id="set-baks" style="margin-top:8px"></div>
+      </div>
+      <div class="card">
+        <h2>🧬 Şifreli kayıt (v2)</h2>
+        <p class="muted">Açıkken her değişiklikte müşterinin kaydı, anahtarı açıkta görünmeyen şifreli bir kopya olarak <span class="mono">v2</span> alanına da yazılır (DigiPark 0.3.2 ve sonrası okur). Eski kayıtlar olduğu gibi kalır.</p>
+        <label class="check"><input type="checkbox" id="set-v2"> <span>v2 kopyasını da yaz</span></label>
+        <button class="btn block" id="set-v2all" type="button">Eksik v2 kopyalarını tamamla</button>
+      </div>
+      <div class="card">
+        <h2>🔒 Güvenlik</h2>
+        <p class="muted">5 dakika işlem yapılmazsa panel kendiliğinden kilitlenir.</p>
+        <div class="row"><button class="btn" id="set-lock" type="button">Şimdi kilitle</button><button class="btn danger" id="set-forget" type="button">Bu cihazı unut</button></div>
+      </div>
+      <footer id="about"></footer>
+    </div>
+  </main>
+  <nav>
+    <button data-tab="list" class="on"><span>👥</span>Müşteriler</button>
+    <button data-tab="new"><span>➕</span>Yeni</button>
+    <button data-tab="log"><span>🧾</span>Günlük</button>
+    <button data-tab="set"><span>⚙️</span>Ayarlar</button>
+  </nav>
+</section>
+
+<div id="sheets"></div>
+<script>
+'use strict';
+// DigitaraLab Lisans paneli. Gizli bilgi İÇERMEZ: bin kimlikleri ve Master Key
+// kurulumda girilir, yönetici şifresinden türetilen anahtarla şifrelenip yalnız
+// bu cihazın IndexedDB'sinde tutulur.
+const VERSION = '0.3.2';
+const API = 'https://api.jsonbin.io/v3';
+const VAULT_ITER = 600000;                 // yönetici şifresi → kasa / yönetim kaydı
+const V2_ITER = 200000;                    // lisans anahtarı → v2 kimlik + içerik anahtarı (uygulamayla aynı)
+const V2_SALT = 'DigitaraLab/DigiPark/lisans/v2';
+const ADMIN_APP = 'digitaralab-lisans-yonetim';
+const IDLE_MS = 5 * 60 * 1000;
+const LOCK_STEPS = [30, 60, 300, 900];     // 3., 4., 5., 6.+ yanlış denemeden sonra bekleme (sn)
+const MAX_BACKUPS = 20, MAX_LOG = 3000;
+const ALPH = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+const KEY_RE = /^(DL-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}|DENEME-[A-Z0-9]{4}-[A-Z0-9]{4})$/;
+const te = new TextEncoder(), td = new TextDecoder();
+const $ = s => document.querySelector(s);
+
+// ── Küçük yardımcılar ─────────────────────────────
+const p2 = n => String(n).padStart(2, '0');
+const b64 = u8 => { let s = ''; for (const b of u8) s += String.fromCharCode(b); return btoa(s); };
+const unb64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+const hex = u8 => Array.from(u8, b => b.toString(16).padStart(2, '0')).join('');
+const rand = n => crypto.getRandomValues(new Uint8Array(n));
+const clone = o => JSON.parse(JSON.stringify(o));
+function stable(v) {
+  if (Array.isArray(v)) return '[' + v.map(stable).join(',') + ']';
+  if (v && typeof v === 'object') return '{' + Object.keys(v).sort().map(k => JSON.stringify(k) + ':' + stable(v[k])).join(',') + '}';
+  return JSON.stringify(v === undefined ? null : v);
+}
+const eq = (a, b) => stable(a) === stable(b);
+function h(tag, attrs, ...kids) {
+  const el = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs || {})) {
+    if (v === false || v == null) continue;
+    if (k === 'class') el.className = v; else if (k === 'text') el.textContent = v;
+    else if (k.startsWith('data-')) el.setAttribute(k, v); else if (k in el) el[k] = v; else el.setAttribute(k, v);
+  }
+  for (const c of kids.flat()) if (c != null && c !== false) el.append(c instanceof Node ? c : String(c));
+  return el;
+}
+function todayKey() { const d = new Date(); return d.getFullYear() + '-' + p2(d.getMonth() + 1) + '-' + p2(d.getDate()); }
+function isDate(s) {
+  if (typeof s !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(s)) return false;
+  const [y, m, d] = s.split('-').map(Number), t = new Date(Date.UTC(y, m - 1, d));
+  return t.getUTCFullYear() === y && t.getUTCMonth() === m - 1 && t.getUTCDate() === d;
+}
+const utc = s => { const [y, m, d] = s.split('-').map(Number); return Date.UTC(y, m - 1, d); };
+function addMonths(s, n) {
+  const [y, m, d] = s.split('-').map(Number), tm = m - 1 + n;
+  const ny = y + Math.floor(tm / 12), nm = ((tm % 12) + 12) % 12;
+  const last = new Date(Date.UTC(ny, nm + 1, 0)).getUTCDate();
+  return ny + '-' + p2(nm + 1) + '-' + p2(Math.min(d, last));
+}
+const addDays = (s, n) => new Date(utc(s) + n * 864e5).toISOString().slice(0, 10);
+const daysLeft = exp => isDate(exp) ? Math.round((utc(exp) - utc(todayKey())) / 864e5) : NaN;
+const fmtDate = s => isDate(s) ? s.slice(8, 10) + '.' + s.slice(5, 7) + '.' + s.slice(0, 4) : String(s);
+const normName = s => String(s || '').toLocaleLowerCase('tr').replace(/[^a-z0-9çğıöşü]/g, '');
+function sameName(a, b) {
+  const x = normName(a), y = normName(b);
+  if (!x || !y) return false;
+  return x === y || (Math.min(x.length, y.length) >= 4 && (x.includes(y) || y.includes(x)));
+}
+
+// ── Rastgele anahtar (yalnız crypto.getRandomValues, eşit dağılımlı) ──
+function randChars(n) {
+  let out = '';
+  while (out.length < n) {
+    for (const b of rand(32)) {        // 252 = 36·7 → 252 ve üstü atılır (sapmasız)
+      if (b < 252) out += ALPH[b % 36];
+      if (out.length === n) break;
+    }
+  }
+  return out;
+}
+function genKey(type, existing) {
+  for (let i = 0; i < 100; i++) {
+    const k = type === 'DENEME' ? 'DENEME-' + randChars(4) + '-' + randChars(4)
+                                : 'DL-' + randChars(4) + '-' + randChars(4) + '-' + randChars(4);
+    if (!existing || !Object.prototype.hasOwnProperty.call(existing, k)) return k;
+  }
+  throw new Error('Benzersiz anahtar üretilemedi');
+}
+const genCid = () => 'M-' + randChars(10);
+
+// ── Kripto ────────────────────────────────────────
+async function pbkdf2(pass, salt, iter, bits) {
+  const base = await crypto.subtle.importKey('raw', te.encode(pass), 'PBKDF2', false, ['deriveBits']);
+  return new Uint8Array(await crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt, iterations: iter }, base, bits));
+}
+const aesKey = raw => crypto.subtle.importKey('raw', raw, 'AES-GCM', false, ['encrypt', 'decrypt']);
+async function seal(key, obj, aad) {
+  const iv = rand(12);
+  const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv, additionalData: te.encode(aad) }, key, te.encode(JSON.stringify(obj)));
+  return { iv: b64(iv), ct: b64(new Uint8Array(ct)) };
+}
+async function unseal(key, box, aad) {
+  const pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: unb64(box.iv), additionalData: te.encode(aad) }, key, unb64(box.ct));
+  return JSON.parse(td.decode(pt));
+}
+// v2: anahtardan 64 bayt → ilk 16 kimlik (hex), sonraki 32 AES-GCM anahtarı. Değer: base64(iv[12] ‖ şifreli).
+async function v2Derive(licKey) {
+  const bits = await pbkdf2(licKey.toUpperCase(), te.encode(V2_SALT), V2_ITER, 512);
+  return { id: hex(bits.slice(0, 16)), key: await aesKey(bits.slice(16, 48)) };
+}
+async function v2Seal(licKey, entry) {
+  const { id, key } = await v2Derive(licKey), iv = rand(12);
+  const ct = new Uint8Array(await crypto.subtle.encrypt({ name: 'AES-GCM', iv, additionalData: te.encode(id) }, key,
+    te.encode(JSON.stringify(Object.assign({ v: 2 }, entry)))));
+  const out = new Uint8Array(12 + ct.length); out.set(iv); out.set(ct, 12);
+  return { id, val: b64(out) };
+}
+
+// ── IndexedDB (cihaz kasası) ──────────────────────
+const DB = {
+  _p: null,
+  open() {
+    return this._p || (this._p = new Promise((res, rej) => {
+      const r = indexedDB.open('digitaralab-lisans', 1);
+      r.onupgradeneeded = () => r.result.createObjectStore('kv');
+      r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error);
+    }));
+  },
+  async tx(mode, fn) {
+    const db = await this.open();
+    return new Promise((res, rej) => {
+      const t = db.transaction('kv', mode), st = t.objectStore('kv'), r = fn(st);
+      t.oncomplete = () => res(r && r.result); t.onerror = () => rej(t.error); t.onabort = () => rej(t.error);
+    });
+  },
+  get(k) { return this.tx('readonly', st => st.get(k)); },
+  set(k, v) { return this.tx('readwrite', st => st.put(v, k)); },
+  clear() { return this.tx('readwrite', st => st.clear()); },
+};
+
+// ── Durum ─────────────────────────────────────────
+const S = { secrets: null, vaultKey: null, adminKey: null, base: null, admin: null, device: null,
+            lastAct: Date.now(), tab: 'list', filter: 'all', q: '', newType: 'DL', newDur: null };
+
+// ── JSONBin ───────────────────────────────────────
+async function jb(mk, method, path, body, extra) {
+  const headers = Object.assign({ 'X-Master-Key': mk }, extra || {});
+  if (body !== undefined) headers['Content-Type'] = 'application/json';
+  let r;
+  try { r = await fetch(API + path, { method, headers, cache: 'no-store', body: body === undefined ? undefined : JSON.stringify(body) }); }
+  catch (e) { throw new Error('JSONBin\'e ulaşılamadı (internet bağlantısını kontrol edin).'); }
+  let j = null; try { j = await r.json(); } catch (e) {}
+  if (!r.ok) throw new Error('JSONBin ' + r.status + (j && j.message ? ': ' + j.message : ''));
+  return j;
+}
+const binPath = id => '/b/' + encodeURIComponent(id);
+async function readRecord(mk, id) { const j = await jb(mk, 'GET', binPath(id) + '/latest'); return j && j.record; }
+async function readLicense() {
+  const r = await readRecord(S.secrets.masterKey, S.secrets.licenseBin);
+  if (!r || typeof r !== 'object' || !r.keys || typeof r.keys !== 'object' || Array.isArray(r.keys))
+    throw new Error('Lisans kaydında "keys" alanı yok — yanlış bin olabilir.');
+  return r;
+}
+const writeLicense = rec => jb(S.secrets.masterKey, 'PUT', binPath(S.secrets.licenseBin), rec);
+
+// ── Yönetim kaydı (JSONBin'de, yönetici şifresiyle şifreli) ──
+function adminDefaults() {
+  return { schema: 1, createdAt: new Date().toISOString(), customers: {}, log: [], settings: { v2Write: false, trialDays: 14, months: [1, 3, 6, 12] } };
+}
+async function adminSealWrap(wrapBase, data, key) {
+  const box = await seal(key, data, ADMIN_APP);
+  return { app: ADMIN_APP, schema: 1, kdf: wrapBase.kdf, iv: box.iv, ct: box.ct };
+}
+async function adminOpen(wrap, key) {
+  if (!wrap || wrap.app !== ADMIN_APP || !wrap.kdf) throw new Error('Bu bir DigitaraLab yönetim kaydı değil.');
+  return unseal(key, wrap, ADMIN_APP);
+}
+async function saveAdmin(mutate) {
+  const wrap = await readRecord(S.secrets.masterKey, S.secrets.adminBin);
+  const data = await adminOpen(wrap, S.adminKey);
+  mutate(data);
+  if (data.log.length > MAX_LOG) data.log = data.log.slice(-MAX_LOG);
+  await jb(S.secrets.masterKey, 'PUT', binPath(S.secrets.adminBin), await adminSealWrap(wrap, data, S.adminKey));
+  S.admin = data;
+}
+
+// ── Arayüz yardımcıları ───────────────────────────
+function toast(msg, bad) {
+  for (const o of document.querySelectorAll('.toast')) o.remove();
+  const t = h('div', { class: 'toast' + (bad ? ' bad' : ''), role: 'status', text: msg });
+  document.body.append(t); setTimeout(() => t.remove(), bad ? 6000 : 2600);
+}
+let busyEl = null;
+function busy(msg) {
+  if (busyEl) { busyEl.remove(); busyEl = null; }
+  if (msg) { busyEl = h('div', { class: 'busy' }, h('div', { text: '⏳ ' + msg })); document.body.append(busyEl); }
+}
+// buttons: [{label, value, cls}] → Promise<value> (arka plana dokunmak = null)
+function sheet(title, body, buttons) {
+  return new Promise(res => {
+    const close = v => { ov.remove(); res(v); };
+    const row = h('div', { class: 'row' }, buttons.map(b => {
+      const el = h('button', { class: 'btn ' + (b.cls || ''), type: 'button', text: b.label });
+      el.addEventListener('click', () => close(typeof b.value === 'function' ? b.value() : b.value));
+      return el;
+    }));
+    const sh = h('div', { class: 'sheet', role: 'dialog', 'aria-modal': 'true' }, h('h3', { text: title }), body, row);
+    const ov = h('div', { class: 'overlay' }, sh);
+    ov.addEventListener('click', e => { if (e.target === ov) close(null); });
+    $('#sheets').append(ov);
+    const first = sh.querySelector('input,textarea'); if (first) first.focus();
+  });
+}
+const confirmSheet = (title, body, okLabel, danger) =>
+  sheet(title, body, [{ label: 'Vazgeç', value: false }, { label: okLabel || 'Onayla', value: true, cls: danger ? 'danger' : 'primary' }]);
+const info = (title, body) => sheet(title, body, [{ label: 'Tamam', value: true, cls: 'primary' }]);
+async function copyText(s) {
+  try { await navigator.clipboard.writeText(s); }
+  catch (e) { const ta = h('textarea', { value: s }); document.body.append(ta); ta.select(); document.execCommand('copy'); ta.remove(); }
+  toast('📋 Kopyalandı');
+}
+function download(name, obj) {
+  const url = URL.createObjectURL(new Blob([JSON.stringify(obj, null, 2)], { type: 'application/json' }));
+  const a = h('a', { href: url, download: name }); document.body.append(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 5000);
+}
+const stamp = () => { const d = new Date(); return d.getFullYear() + p2(d.getMonth() + 1) + p2(d.getDate()) + '-' + p2(d.getHours()) + p2(d.getMinutes()); };
+function show(view) { for (const v of ['setup', 'lock', 'main']) $('#v-' + v).classList.toggle('hidden', v !== view); }
+
+// ── Kurulum ───────────────────────────────────────
+let setupEnv = null, setupAdm = 'new';
+$('#s-env').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; setupEnv = b.dataset.env; for (const x of $('#s-env').children) x.classList.toggle('on', x === b); });
+$('#s-adm').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; setupAdm = b.dataset.adm; for (const x of $('#s-adm').children) x.classList.toggle('on', x === b); $('#s-adm-wrap').classList.toggle('hidden', setupAdm !== 'existing'); });
+$('#s-go').addEventListener('click', async () => {
+  const err = m => { $('#s-err').textContent = m; };
+  const lic = $('#s-lic').value.trim(), mk = $('#s-mk').value.trim(), admId = $('#s-admid').value.trim();
+  const dev = $('#s-dev').value.trim() || 'Cihaz', pw = $('#s-pw').value, pw2 = $('#s-pw2').value;
+  const idOk = s => /^[A-Za-z0-9_-]{8,64}$/.test(s);
+  if (!setupEnv) return err('Ortamı seçin: Test bin\'i mi, gerçek bin mi?');
+  if (!idOk(lic)) return err('Lisans bin kimliği geçersiz görünüyor.');
+  if (mk.length < 20 || /\s/.test(mk)) return err('Master Key geçersiz görünüyor.');
+  if (setupAdm === 'existing' && !idOk(admId)) return err('Yönetim kaydı kimliği geçersiz görünüyor.');
+  if (setupAdm === 'existing' && admId === lic) return err('Yönetim kaydı lisans kaydıyla aynı olamaz.');
+  if (pw.length < 12) return err('Şifre en az 12 karakter olmalı.');
+  if (pw !== pw2) return err('Şifreler aynı değil.');
+  err(''); busy('Bağlantı kontrol ediliyor…');
+  try {
+    const rec = await readRecord(mk, lic);
+    if (!rec || !rec.keys || typeof rec.keys !== 'object') throw new Error('Bu bin\'de "keys" alanı yok — lisans kaydı değil.');
+    let adminBin = admId, adminRaw;
+    busy('Şifre anahtarı hazırlanıyor…');
+    if (setupAdm === 'existing') {
+      const wrap = await readRecord(mk, admId);
+      if (!wrap || wrap.app !== ADMIN_APP) throw new Error('Bu kimlik bir DigitaraLab yönetim kaydı değil.');
+      adminRaw = await pbkdf2(pw, unb64(wrap.kdf.salt), wrap.kdf.iter, 256);
+      try { await adminOpen(wrap, await aesKey(adminRaw)); }
+      catch (e) { throw new Error('Bu şifre yönetim kaydını açamıyor. Diğer cihazdaki yönetici şifresini kullanın.'); }
+    } else {
+      const salt = rand(16);
+      adminRaw = await pbkdf2(pw, salt, VAULT_ITER, 256);
+      const wrap = await adminSealWrap({ kdf: { name: 'PBKDF2-SHA256', iter: VAULT_ITER, salt: b64(salt) } }, adminDefaults(), await aesKey(adminRaw));
+      busy('Yönetim kaydı oluşturuluyor…');
+      const j = await jb(mk, 'POST', '/b', wrap, { 'X-Bin-Private': 'true', 'X-Bin-Name': 'DigitaraLab-Lisans-Yonetim' });
+      adminBin = j && j.metadata && j.metadata.id;
+      if (!adminBin) throw new Error('Yönetim kaydı oluşturulamadı.');
+    }
+    const vsalt = rand(16), vkey = await aesKey(await pbkdf2(pw, vsalt, VAULT_ITER, 256));
+    const secrets = { licenseBin: lic, adminBin, masterKey: mk, env: setupEnv, adminKeyRaw: b64(adminRaw) };
+    const box = await seal(vkey, secrets, 'vault');
+    await DB.set('vault', { v: 1, iter: VAULT_ITER, salt: b64(vsalt), iv: box.iv, ct: box.ct });
+    await DB.set('device', { id: randChars(6), name: dev });
+    await DB.set('guard', { fails: 0, until: 0 });
+    for (const id of ['#s-mk', '#s-pw', '#s-pw2', '#s-lic', '#s-admid']) $(id).value = '';
+    adminRaw.fill(0);
+    busy(null); toast('✅ Kuruldu. Şimdi şifrenizle kilidi açın.');
+    show('lock'); $('#l-pw').focus();
+  } catch (e) { busy(null); err(e.message); }
+});
+
+// ── Kilit ─────────────────────────────────────────
+async function unlock() {
+  const pw = $('#l-pw').value, err = m => { $('#l-err').textContent = m; };
+  const g = (await DB.get('guard')) || { fails: 0, until: 0 };
+  const now = Date.now();
+  if (g.until > now) return err('Çok fazla yanlış deneme. ' + Math.ceil((g.until - now) / 1000) + ' sn sonra tekrar deneyin.');
+  if (!pw) return err('Şifreyi yazın.');
+  const vault = await DB.get('vault');
+  if (!vault) { show('setup'); return; }
+  busy('Açılıyor…');
+  let secrets = null, vkey = null;
+  try {
+    vkey = await aesKey(await pbkdf2(pw, unb64(vault.salt), vault.iter, 256));
+    secrets = await unseal(vkey, vault, 'vault');
+  } catch (e) { secrets = null; }
+  busy(null);
+  if (!secrets) {
+    g.fails = (g.fails || 0) + 1;
+    if (g.fails >= 3) g.until = Date.now() + 1000 * LOCK_STEPS[Math.min(g.fails - 3, LOCK_STEPS.length - 1)];
+    await DB.set('guard', g);
+    return err(g.fails >= 3 ? 'Şifre yanlış. ' + Math.ceil((g.until - Date.now()) / 1000) + ' sn beklemeniz gerekiyor.' : 'Şifre yanlış.');
+  }
+  await DB.set('guard', { fails: 0, until: 0 });
+  $('#l-pw').value = ''; err('');
+  S.secrets = secrets; S.vaultKey = vkey;
+  S.adminKey = await aesKey(unb64(secrets.adminKeyRaw));
+  S.device = (await DB.get('device')) || { id: '??????', name: 'Cihaz' };
+  S.lastAct = Date.now();
+  show('main'); setTab('list');
+  const env = $('#h-env'); env.className = 'env ' + secrets.env; env.textContent = secrets.env === 'real' ? 'GERÇEK' : 'TEST';
+  await reload();
+}
+function lock(msg) {
+  S.secrets = S.vaultKey = S.adminKey = S.base = S.admin = null;
+  $('#sheets').replaceChildren(); busy(null);
+  for (const id of ['#list', '#log-list', '#set-conn', '#set-baks', '#n-prev']) $(id).replaceChildren();
+  $('#new-result-card').hidden = true; $('#new-result-card').replaceChildren();
+  show('lock'); $('#l-err').textContent = msg || '';
+}
+$('#l-go').addEventListener('click', unlock);
+$('#l-pw').addEventListener('keydown', e => { if (e.key === 'Enter') unlock(); });
+async function forget() {
+  const inp = h('input', { type: 'text', placeholder: 'UNUT', autocomplete: 'off' });
+  const ok = await confirmSheet('Bu cihazı unut', h('div', {}, h('p', { text: 'Bu cihazdaki şifreli bağlantı bilgileri ve yedekler silinir. JSONBin\'deki kayıtlar etkilenmez. Tekrar kullanmak için kurulumu yeniden yapmanız gerekir.' }), h('label', { text: 'Onay için UNUT yazın' }), inp), 'Sil', true);
+  if (!ok || inp.value.trim().toLocaleUpperCase('tr') !== 'UNUT') { if (ok) toast('Onay metni yanlış, silinmedi.', true); return; }
+  await DB.clear(); location.reload();
+}
+$('#l-forget').addEventListener('click', forget);
+
+// Otomatik kilit: her etkileşimde süre kontrol edilir (uykudan dönen telefon dahil)
+function idleCheck() { if (S.secrets && Date.now() - S.lastAct > IDLE_MS) { lock('5 dakika işlem yapılmadığı için kilitlendi.'); return true; } return false; }
+for (const ev of ['pointerdown', 'keydown']) document.addEventListener(ev, e => {
+  if (!S.secrets) return;
+  if (idleCheck()) { e.preventDefault(); e.stopImmediatePropagation(); return; }
+  S.lastAct = Date.now();
+}, true);
+document.addEventListener('visibilitychange', idleCheck);
+setInterval(idleCheck, 10000);
+
+// ── Yükleme ve liste ──────────────────────────────
+async function reload() {
+  busy('Kayıtlar okunuyor…');
+  try {
+    const [lic, wrap] = await Promise.all([readLicense(), readRecord(S.secrets.masterKey, S.secrets.adminBin)]);
+    S.base = lic;
+    try { S.admin = await adminOpen(wrap, S.adminKey); }
+    catch (e) { S.admin = null; toast('Yönetim kaydı açılamadı: ' + e.message, true); }
+    renderAll();
+  } catch (e) { toast(e.message, true); }
+  finally { busy(null); }
+}
+$('#h-refresh').addEventListener('click', () => reload());
+$('#h-lock').addEventListener('click', () => lock());
+$('#set-lock').addEventListener('click', () => lock());
+$('#set-forget').addEventListener('click', forget);
+
+function setTab(t) {
+  S.tab = t;
+  for (const id of ['list', 'new', 'log', 'set']) $('#t-' + id).classList.toggle('hidden', id !== t);
+  for (const b of document.querySelectorAll('nav button')) b.classList.toggle('on', b.dataset.tab === t);
+  if (S.base) renderTab();
+  window.scrollTo(0, 0);
+}
+document.querySelector('nav').addEventListener('click', e => { const b = e.target.closest('button'); if (b) setTab(b.dataset.tab); });
+function renderAll() { renderTab(); }
+function renderTab() { ({ list: renderList, new: renderNew, log: renderLog, set: renderSettings })[S.tab](); }
+
+function status(key, e) {
+  const d = daysLeft(e.expiry);
+  if (!e.active) return { cls: 'b-off', text: '🔒 Kapalı', f: 'closed' };
+  if (!(d >= 0)) return { cls: 'b-bad', text: '⛔ Süresi doldu', f: 'expired' };
+  if (d <= 7) return { cls: 'b-warn', text: '⚠️ ' + d + ' gün', f: 'soon' };
+  return { cls: 'b-ok', text: '✅ ' + d + ' gün', f: 'active' };
+}
+function matches(key, e, f) {
+  const st = status(key, e).f;
+  if (f === 'all') return true;
+  if (f === 'trial') return key.startsWith('DENEME-');
+  if (f === 'active') return st === 'active' || st === 'soon';
+  return st === f;
+}
+function renderList() {
+  const keys = S.base.keys, q = normName(S.q), qk = S.q.trim().toUpperCase();
+  const all = Object.keys(keys).filter(k => keys[k] && typeof keys[k] === 'object');
+  const rows = all.filter(k => matches(k, keys[k], S.filter) && (!q || normName(keys[k].business).includes(q) || (qk && k.includes(qk))));
+  const rank = k => (keys[k].active ? 0 : 1);
+  rows.sort((a, b) => rank(a) - rank(b) || String(keys[a].expiry).localeCompare(String(keys[b].expiry)));
+  $('#list-info').textContent = rows.length + ' / ' + all.length + ' lisans';
+  $('#list').replaceChildren(...rows.map(k => {
+    const e = keys[k], st = status(k, e);
+    return h('div', { class: 'card lic' },
+      h('div', { class: 'top' }, h('div', { class: 'biz', text: e.business || '(adsız)' }), h('span', { class: 'badge ' + st.cls, text: st.text })),
+      h('code', { text: k }),
+      h('div', { class: 'meta', text: 'Bitiş: ' + fmtDate(e.expiry) + (k.startsWith('DENEME-') ? ' · Deneme' : '') }),
+      h('div', { class: 'acts' },
+        h('button', { class: 'btn', type: 'button', 'data-act': 'copy', 'data-key': k, title: 'Anahtarı kopyala', text: '📋' }),
+        h('button', { class: 'btn', type: 'button', 'data-act': 'wa', 'data-key': k, title: 'WhatsApp mesajı', text: '📱' }),
+        h('button', { class: 'btn', type: 'button', 'data-act': 'renew', 'data-key': k, text: '🔄 Uzat' }),
+        h('button', { class: 'btn', type: 'button', 'data-act': 'toggle', 'data-key': k, text: e.active ? '🔒 Kapat' : '🔓 Aç' }),
+        h('button', { class: 'btn', type: 'button', 'data-act': 'del', 'data-key': k, title: 'Kalıcı sil', text: '🗑️' })));
+  }));
+}
+$('#q').addEventListener('input', e => { S.q = e.target.value; renderList(); });
+$('#chips').addEventListener('click', e => { const b = e.target.closest('.chip'); if (!b) return; S.filter = b.dataset.f; for (const c of $('#chips').children) c.classList.toggle('on', c === b); renderList(); });
+$('#list').addEventListener('click', e => {
+  const b = e.target.closest('button[data-act]'); if (!b) return;
+  const k = b.dataset.key, ent = S.base.keys[k]; if (!ent) return;
+  ({ copy: () => copyText(k), wa: () => waSheet('info', k, ent), renew: () => renewKey(k), toggle: () => toggleKey(k), del: () => deleteKey(k) })[b.dataset.act]();
+});
+
+// ── Güvenli kaydetme ──────────────────────────────
+function validateEntry(k, e, isNew) {
+  const bad = m => { throw new Error(k + ': ' + m); };
+  if (isNew && !KEY_RE.test(k)) bad('anahtar biçimi geçersiz');
+  if (!e || typeof e !== 'object' || Array.isArray(e)) bad('kayıt nesne değil');
+  if (typeof e.active !== 'boolean') bad('"active" evet/hayır (true/false) olmalı');
+  if (!isDate(e.expiry)) bad('"expiry" YYYY-AA-GG biçiminde gerçek bir tarih olmalı');
+  if (typeof e.business !== 'string' || !e.business.trim()) bad('işletme adı boş olamaz');
+  if ('loyalty' in e && ![true, false, 'trial'].includes(e.loyalty)) bad('"loyalty" yalnız true / "trial" / false olabilir');
+  if ('profile' in e && !['', 'sadakat'].includes(e.profile)) bad('"profile" boş ya da "sadakat" olabilir');
+  if ('noBranding' in e && typeof e.noBranding !== 'boolean') bad('"noBranding" true/false olmalı');
+}
+function checkInvariants(fresh, next, touched, newKeys) {
+  const fk = fresh.keys, nk = next.keys;
+  for (const top of new Set([...Object.keys(fresh), ...Object.keys(next)]))
+    if (top !== 'keys' && top !== 'v2' && !eq(fresh[top], next[top])) throw new Error('Kayıtta "' + top + '" alanı değişemez.');
+  for (const k of new Set([...Object.keys(fk), ...Object.keys(nk)])) {
+    if (touched.includes(k)) continue;
+    if (!eq(fk[k], nk[k])) throw new Error('İşlem dışı kayıt değişmiş olurdu: ' + k);
+  }
+  for (const k of Object.keys(nk)) if (!(k in fk) && !newKeys.includes(k)) throw new Error('Beklenmeyen yeni kayıt: ' + k);
+  const removed = Object.keys(fk).filter(k => !(k in nk));
+  if (removed.length > 1) throw new Error('Tek işlemde birden fazla kayıt silinemez.');
+  if (Object.keys(fk).length && !Object.keys(nk).length) throw new Error('Lisans listesi boşaltılamaz.');
+  for (const k of touched) if (k in nk) validateEntry(k, nk[k], newKeys.includes(k));
+}
+const FIELD = { active: 'Durum', expiry: 'Bitiş', business: 'İşletme', loyalty: 'Puan Kulübü', profile: 'Profil', noBranding: 'İbare', cid: 'Müşteri kimliği', createdAt: 'Oluşturma' };
+const showVal = (f, v) => v === undefined ? '—' : f === 'active' ? (v ? 'Açık' : 'Kapalı') : f === 'expiry' ? fmtDate(v) : typeof v === 'string' ? v : JSON.stringify(v);
+function diffLines(fresh, next, touched) {
+  const out = [];
+  for (const k of touched) {
+    const a = fresh.keys[k], b = next.keys[k];
+    if (!a && b) out.push({ act: 'yeni', key: k, biz: b.business, text: '➕ Yeni: ' + b.business + ' · ' + k + ' · bitiş ' + fmtDate(b.expiry) });
+    else if (a && !b) out.push({ act: 'sil', key: k, biz: a.business, text: '🗑️ Silinecek: ' + a.business + ' · ' + k });
+    else if (a && b) {
+      const ch = Object.keys(Object.assign({}, a, b)).filter(f => !eq(a[f], b[f]));
+      if (ch.length) out.push({ act: 'değişti', key: k, biz: b.business, from: ch.map(f => showVal(f, a[f])).join(', '), to: ch.map(f => showVal(f, b[f])).join(', '),
+        text: '✏️ ' + b.business + ' · ' + k + ': ' + ch.map(f => (FIELD[f] || f) + ' ' + showVal(f, a[f]) + ' → ' + showVal(f, b[f])).join(' · ') });
+    }
+  }
+  return out;
+}
+async function applyV2(next, touched) {
+  if (!S.admin || !S.admin.settings || !S.admin.settings.v2Write) return;
+  next.v2 = next.v2 && typeof next.v2 === 'object' ? next.v2 : {};
+  for (const k of touched) {
+    if (next.keys[k]) { const { id, val } = await v2Seal(k, next.keys[k]); next.v2[id] = val; }
+    else { const { id } = await v2Derive(k); delete next.v2[id]; }
+  }
+}
+async function backup(rec) {
+  const box = await seal(S.vaultKey, rec, 'backup');
+  const list = (await DB.get('backups')) || [];
+  list.push({ at: new Date().toISOString(), bin: S.secrets.licenseBin, n: Object.keys(rec.keys).length, iv: box.iv, ct: box.ct });
+  await DB.set('backups', list.slice(-MAX_BACKUPS));
+}
+// op: { title, touched:[anahtar], newKeys:[...], mutate(next, fresh), adminMutate?(data, lines), okLabel?, danger? }
+async function commit(op) {
+  const newKeys = op.newKeys || [];
+  busy('Güncel kayıt okunuyor…');
+  try {
+    const fresh = await readLicense();
+    const conflicts = op.touched.filter(k => !eq(S.base.keys[k], fresh.keys[k]));
+    if (conflicts.length) {
+      const lines = conflicts.map(k => {
+        const a = S.base.keys[k], b = fresh.keys[k];
+        return h('li', { text: k + ': ' + (b ? (b.business + ' · bitiş ' + fmtDate(b.expiry) + ' · ' + (b.active ? 'Açık' : 'Kapalı')) : 'silinmiş') + ' (ekrandaki: ' + (a ? fmtDate(a.expiry) + ' · ' + (a.active ? 'Açık' : 'Kapalı') : 'yok') + ')' });
+      });
+      S.base = fresh; renderAll(); busy(null);
+      await info('⚠️ Başka bir cihazda değişiklik var', h('div', {}, h('p', { text: 'Bu kayıt siz ekrana baktıktan sonra değişmiş. Hiçbir şey kaydedilmedi; ekran güncellendi, işlemi kontrol edip tekrar yapın.' }), h('ul', {}, lines)));
+      return false;
+    }
+    const others = [...new Set([...Object.keys(S.base.keys), ...Object.keys(fresh.keys)])].filter(k => !op.touched.includes(k) && !eq(S.base.keys[k], fresh.keys[k]));
+    const next = clone(fresh);
+    await op.mutate(next, fresh);
+    checkInvariants(fresh, next, op.touched, newKeys);
+    const lines = diffLines(fresh, next, op.touched);
+    if (!lines.length) { busy(null); toast('Değişiklik yok.'); return false; }
+    busy(null);
+    const body = h('div', {}, h('p', { text: 'Şunu kaydediyorum:' }), h('ul', {}, lines.map(l => h('li', { text: l.text }))),
+      others.length ? h('p', { class: 'muted', text: 'Not: başka bir cihazda ' + others.length + ' kayıt değişmiş; o değişiklikler korunuyor.' }) : null,
+      h('p', { class: 'muted', text: (S.secrets.env === 'real' ? '🏢 GERÇEK' : '🧪 TEST') + ' kayıt · önceki hâl bu cihaza yedeklenir.' }));
+    if (!(await confirmSheet(op.title, body, op.okLabel || 'Kaydet', op.danger))) return false;
+    busy('Kaydediliyor…');
+    const again = await readLicense();
+    if (!eq(again, fresh)) { busy(null); S.base = again; renderAll(); await info('⚠️ Bu sırada kayıt değişti', h('p', { text: 'Onay beklerken başka bir cihazdan kayıt yapıldı. Hiçbir şey kaydedilmedi; ekran güncellendi, tekrar deneyin.' })); return false; }
+    await applyV2(next, op.touched);
+    await backup(fresh);
+    await writeLicense(next);
+    S.base = next;
+    busy('Günlük yazılıyor…');
+    try {
+      await saveAdmin(d => {
+        const at = new Date().toISOString();
+        for (const l of lines) d.log.push({ at, dev: S.device.name, act: l.act, key: l.key, biz: l.biz, from: l.from, to: l.to, op: op.title });
+        if (op.adminMutate) op.adminMutate(d, lines);
+      });
+    } catch (e) { toast('Lisans kaydedildi ama günlük yazılamadı: ' + e.message, true); }
+    busy(null); renderAll(); toast('✅ Kaydedildi');
+    return true;
+  } catch (e) { busy(null); toast(e.message, true); return false; }
+}
+
+// ── Lisans işlemleri ──────────────────────────────
+async function toggleKey(k) {
+  const to = !S.base.keys[k].active;
+  await commit({ title: to ? '🔓 Lisansı aç' : '🔒 Lisansı kapat', touched: [k], danger: !to, okLabel: to ? 'Aç' : 'Kapat',
+    mutate: n => { if (!n.keys[k]) throw new Error('Kayıt bulunamadı'); n.keys[k].active = to; } });
+}
+async function renewKey(k) {
+  const e = S.base.keys[k], from = isDate(e.expiry) && e.expiry > todayKey() ? e.expiry : todayKey();
+  const dateIn = h('input', { type: 'date', value: addMonths(from, 12) });
+  const act = h('input', { type: 'checkbox', checked: !e.active });
+  const mBtns = (S.admin && S.admin.settings && S.admin.settings.months || [1, 3, 6, 12]).map(m => {
+    const b = h('button', { class: 'btn', type: 'button', text: '+' + m + ' ay' });
+    b.addEventListener('click', () => { dateIn.value = addMonths(from, m); }); return b;
+  });
+  const body = h('div', {}, h('p', { text: e.business + ' · ' + k }),
+    h('p', { class: 'muted', text: 'Şu anki bitiş: ' + fmtDate(e.expiry) + (from === todayKey() ? ' (süre dolduğu için bugünden itibaren eklenir)' : '') }),
+    h('div', { class: 'row' }, mBtns), h('label', { text: 'Yeni bitiş tarihi' }), dateIn,
+    e.active ? null : h('label', { class: 'check' }, act, h('span', { text: 'Kapalı lisansı da aç' })));
+  const exp = await sheet('🔄 Süre uzat', body, [{ label: 'Vazgeç', value: null }, { label: 'Devam', value: () => dateIn.value, cls: 'primary' }]);
+  if (!exp) return;
+  if (!isDate(exp)) return toast('Geçerli bir tarih seçin.', true);
+  const ok = await commit({ title: '🔄 Süre uzat', touched: [k],
+    mutate: n => { if (!n.keys[k]) throw new Error('Kayıt bulunamadı'); n.keys[k].expiry = exp; if (!e.active && act.checked) n.keys[k].active = true; } });
+  if (ok) waSheet('renew', k, S.base.keys[k]);
+}
+async function deleteKey(k) {
+  const e = S.base.keys[k];
+  if (!(await confirmSheet('🗑️ Kalıcı sil', h('p', { text: e.business + ' · ' + k + ' kalıcı olarak silinsin mi? Müşteri bir sonraki açılışta lisans ekranına düşer. Genellikle "Kapat" yeterlidir.' }), 'Devam', true))) return;
+  const inp = h('input', { type: 'text', autocomplete: 'off' });
+  const ok = await confirmSheet('🗑️ İkinci onay', h('div', {}, h('label', { text: 'Onay için işletme adını aynen yazın: ' + e.business }), inp), 'Sil', true);
+  if (!ok) return;
+  if (inp.value.trim() !== String(e.business).trim()) return toast('İşletme adı eşleşmedi, silinmedi.', true);
+  await commit({ title: '🗑️ Kalıcı sil', touched: [k], danger: true, okLabel: 'Sil', mutate: n => { delete n.keys[k]; } });
+}
+function waText(kind, k, e) {
+  const biz = e.business, exp = fmtDate(e.expiry);
+  if (kind === 'renew') return 'Merhaba ' + biz + ',\n\nDigiPark lisansınız ' + exp + ' tarihine kadar uzatıldı. Anahtarınız aynı kalıyor; uygulamayı internet açıkken kapatıp yeniden açmanız yeterli.\n\nİyi çalışmalar dileriz.\nDigitaraLab';
+  if (kind === 'new' && k.startsWith('DENEME-')) return 'Merhaba ' + biz + ',\n\nDigiPark deneme anahtarınız:\n' + k + '\n\nDeneme süreniz ' + exp + ' tarihine kadar geçerlidir. Uygulamayı açıp lisans ekranına bu anahtarı girmeniz yeterli.\n\nDigitaraLab';
+  if (kind === 'new') return 'Merhaba ' + biz + ',\n\nDigiPark lisans anahtarınız:\n' + k + '\n\nLisansınız ' + exp + ' tarihine kadar geçerlidir. Uygulamayı açıp lisans ekranına bu anahtarı girmeniz yeterli.\n\nİyi çalışmalar dileriz.\nDigitaraLab';
+  return 'Merhaba ' + biz + ',\n\nDigiPark lisans anahtarınız: ' + k + '\nGeçerlilik: ' + exp + ' tarihine kadar\n\nDigitaraLab';
+}
+function waSheet(kind, k, e) {
+  const ta = h('textarea', { value: waText(kind, k, e) });
+  const open = h('a', { class: 'btn', href: '#', target: '_blank', rel: 'noopener noreferrer', text: '📱 WhatsApp\'ta aç' });
+  open.addEventListener('click', () => { open.href = 'https://wa.me/?text=' + encodeURIComponent(ta.value); });
+  const cp = h('button', { class: 'btn primary', type: 'button', text: '📋 Mesajı kopyala' });
+  cp.addEventListener('click', () => copyText(ta.value));
+  return sheet('📱 WhatsApp mesajı', h('div', {}, ta, h('div', { class: 'row' }, cp, open)), [{ label: 'Kapat', value: true }]);
+}
+
+// ── Yeni lisans ───────────────────────────────────
+// Müşteri grupları: cid'li kayıtlar kimliğe göre, eski (cid'siz) kayıtlar ada göre
+function customerGroups() {
+  const g = new Map();
+  for (const [k, e] of Object.entries(S.base.keys)) {
+    if (!e || typeof e !== 'object') continue;
+    const id = e.cid ? 'cid:' + e.cid : 'name:' + normName(e.business);
+    if (!g.has(id)) g.set(id, { id, cid: e.cid || null, name: e.business, keys: [] });
+    g.get(id).keys.push(k);
+  }
+  return [...g.values()].sort((a, b) => String(a.name).localeCompare(String(b.name), 'tr'));
+}
+function newCandidates() {
+  const sel = $('#n-cust').value, name = $('#n-biz').value.trim();
+  const grp = customerGroups().find(x => x.id === sel);
+  const out = [];
+  for (const [k, e] of Object.entries(S.base.keys)) {
+    if (!e || typeof e !== 'object' || !e.active) continue;
+    if (grp && grp.cid && e.cid === grp.cid) out.push({ k, e, checked: true, why: 'Bu müşteriye ait' });
+    else if (name && sameName(name, e.business)) out.push({ k, e, checked: false, why: e.cid ? 'Adı benzer ama başka müşteri kimliği — aynı işletme olduğundan eminseniz işaretleyin' : 'Adı benzer (eski kayıt, müşteri kimliği yok) — aynı işletme olduğundan eminseniz işaretleyin' });
+  }
+  return out;
+}
+function renderNew() {
+  const sel = $('#n-cust'), cur = sel.value;
+  sel.replaceChildren(h('option', { value: '', text: '➕ Yeni müşteri' }),
+    ...customerGroups().map(g => h('option', { value: g.id, text: g.name + ' (' + g.keys.length + ' anahtar' + (g.cid ? '' : ', kimliksiz') + ')' })));
+  if ([...sel.options].some(o => o.value === cur)) sel.value = cur;
+  const st = S.admin && S.admin.settings || {}, months = st.months || [1, 3, 6, 12], trial = st.trialDays || 14;
+  const opts = S.newType === 'DENEME' ? [{ l: trial + ' gün', d: trial }] : months.map(m => ({ l: m + ' ay', m }));
+  if (!S.newDur || !opts.some(o => o.l === S.newDur)) S.newDur = opts[opts.length - 1].l;
+  $('#n-dur').replaceChildren(...opts.map(o => {
+    const b = h('button', { class: 'btn' + (o.l === S.newDur ? ' primary' : ''), type: 'button', text: o.l });
+    b.addEventListener('click', () => { S.newDur = o.l; $('#n-exp').value = ''; renderNew(); }); return b;
+  }));
+  if (!$('#n-exp').value) { const o = opts.find(x => x.l === S.newDur); $('#n-exp').value = o.d ? addDays(todayKey(), o.d) : addMonths(todayKey(), o.m); }
+  for (const b of $('#n-type').children) b.classList.toggle('on', b.dataset.t === S.newType);
+  renderCandidates();
+}
+function renderCandidates() {
+  const c = newCandidates(), grp = $('#n-cust').value;
+  $('#n-prev').replaceChildren(...[
+    grp ? h('p', { class: 'muted', text: '💡 Süre yenilemek için yeni anahtar yerine Müşteriler › 🔄 Uzat kullanın; müşteri anahtarı yeniden girmek zorunda kalmaz.' }) : null,
+    c.length ? h('label', { text: 'Bu müşterinin önceki açık anahtarları — işaretlenenler kapatılır' }) : null,
+    ...c.map(x => h('label', { class: 'check' }, h('input', { type: 'checkbox', checked: x.checked, 'data-k': x.k }),
+      h('span', {}, h('b', { text: x.e.business }), ' · ', h('span', { class: 'mono', text: x.k }), h('br'),
+        h('span', { class: 'muted', text: 'Bitiş ' + fmtDate(x.e.expiry) + ' · ' + (x.checked ? '' : '⚠️ ') + x.why }))))].filter(Boolean));
+}
+$('#n-type').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; S.newType = b.dataset.t; S.newDur = null; $('#n-exp').value = ''; renderNew(); });
+$('#n-cust').addEventListener('change', () => {
+  const g = customerGroups().find(x => x.id === $('#n-cust').value);
+  if (g) $('#n-biz').value = g.name;
+  renderCandidates();
+});
+$('#n-biz').addEventListener('input', renderCandidates);
+$('#n-go').addEventListener('click', async () => {
+  const err = m => { $('#n-err').textContent = m; };
+  const biz = $('#n-biz').value.trim().replace(/\s+/g, ' '), exp = $('#n-exp').value;
+  if (!biz) return err('İşletme adını yazın.');
+  if (!isDate(exp) || exp < todayKey()) return err('Bitiş tarihi bugünden önce olamaz.');
+  err('');
+  const grp = customerGroups().find(x => x.id === $('#n-cust').value);
+  const cid = grp && grp.cid ? grp.cid : genCid();
+  const close = [...$('#n-prev').querySelectorAll('input[data-k]')].filter(i => i.checked).map(i => i.dataset.k);
+  const key = genKey(S.newType, S.base.keys);
+  const ok = await commit({ title: '✨ Yeni lisans', touched: [key, ...close], newKeys: [key],
+    mutate: n => {
+      if (n.keys[key]) throw new Error('Anahtar çakıştı, tekrar deneyin.');
+      n.keys[key] = { active: true, expiry: exp, business: biz, cid, createdAt: todayKey() };
+      for (const k of close) if (n.keys[k]) n.keys[k].active = false;
+    },
+    adminMutate: d => { d.customers = d.customers || {}; if (!d.customers[cid]) d.customers[cid] = { name: biz, createdAt: new Date().toISOString() }; } });
+  if (!ok) return;
+  const e = S.base.keys[key], card = $('#new-result-card');
+  const cpk = h('button', { class: 'btn primary', type: 'button', text: '📋 Anahtarı kopyala' }); cpk.addEventListener('click', () => copyText(key));
+  const wa = h('button', { class: 'btn', type: 'button', text: '📱 WhatsApp mesajı' }); wa.addEventListener('click', () => waSheet('new', key, e));
+  card.replaceChildren(h('h2', { text: '✅ Lisans oluşturuldu' }), h('div', { class: 'muted', text: e.business + ' · bitiş ' + fmtDate(e.expiry) }), h('div', { class: 'bigkey', id: 'new-key', text: key }), h('div', { class: 'row' }, cpk, wa));
+  card.classList.add('result'); card.hidden = false;
+  $('#n-biz').value = ''; $('#n-cust').value = ''; $('#n-exp').value = '';
+  renderNew(); window.scrollTo(0, 0);
+});
+
+// ── Günlük ────────────────────────────────────────
+function renderLog() {
+  const q = normName($('#log-q').value), box = $('#log-list');
+  if (!S.admin) return box.replaceChildren(h('p', { class: 'muted', text: 'Yönetim kaydı açılamadı.' }));
+  const rows = S.admin.log.slice().reverse().filter(l => !q || normName([l.biz, l.key, l.act, l.dev, l.op, l.from, l.to].join(' ')).includes(q)).slice(0, 300);
+  box.replaceChildren(...(rows.length ? rows.map(l => h('div', { class: 'log' },
+    h('div', {}, h('b', { text: (l.op || l.act) + ' · ' + (l.biz || '') })),
+    h('div', { class: 'mono', text: l.key || '' }),
+    l.from || l.to ? h('div', { text: (l.from || '—') + ' → ' + (l.to || '—') }) : null,
+    h('div', { class: 'muted', text: new Date(l.at).toLocaleString('tr-TR') + ' · ' + (l.dev || '') }))) : [h('p', { class: 'muted', text: 'Kayıt yok.' })]));
+}
+$('#log-q').addEventListener('input', renderLog);
+
+// ── Ayarlar ───────────────────────────────────────
+const maskId = s => s.length > 8 ? s.slice(0, 4) + '…' + s.slice(-4) : s;
+async function renderSettings() {
+  const s = S.secrets;
+  const admBtn = h('button', { class: 'btn', type: 'button', text: '📋 Kopyala' });
+  admBtn.addEventListener('click', () => copyText(s.adminBin));
+  $('#set-conn').replaceChildren(
+    h('b', { text: 'Ortam' }), h('span', { text: s.env === 'real' ? '🏢 Gerçek bin' : '🧪 Test bin\'i' }),
+    h('b', { text: 'Lisans kaydı' }), h('span', { class: 'mono', text: maskId(s.licenseBin) }),
+    h('b', { text: 'Yönetim kaydı' }), h('span', {}, h('span', { class: 'mono', text: s.adminBin + ' ' }), admBtn),
+    h('b', { text: 'Bu cihaz' }), h('span', { text: S.device.name }),
+    h('b', { text: 'Lisans sayısı' }), h('span', { text: String(Object.keys(S.base.keys).length) }));
+  $('#set-v2').checked = !!(S.admin && S.admin.settings && S.admin.settings.v2Write);
+  const list = ((await DB.get('backups')) || []).slice().reverse();
+  $('#set-baks').replaceChildren(...(list.length ? list.map(b => {
+    const btn = h('button', { class: 'btn', type: 'button', text: '⬇️ İndir' });
+    btn.addEventListener('click', async () => {
+      try { download('lisans-yedek-' + b.at.slice(0, 16).replace(/[-:T]/g, '') + '.json', await unseal(S.vaultKey, b, 'backup')); }
+      catch (e) { toast('Yedek açılamadı: ' + e.message, true); }
+    });
+    return h('div', { class: 'log', style: 'display:flex;align-items:center;gap:8px' },
+      h('div', { style: 'flex:1' }, h('div', { text: new Date(b.at).toLocaleString('tr-TR') }), h('div', { class: 'muted', text: b.n + ' lisans · ' + maskId(b.bin) })), btn);
+  }) : [h('p', { class: 'muted', text: 'Henüz yedek yok.' })]));
+}
+$('#set-fullbak').addEventListener('click', async () => {
+  busy('Okunuyor…');
+  try { download('lisans-tam-yedek-' + stamp() + '.json', await readLicense()); } catch (e) { toast(e.message, true); } finally { busy(null); }
+});
+$('#set-v2').addEventListener('change', async e => {
+  const on = e.target.checked; busy('Kaydediliyor…');
+  try { await saveAdmin(d => { d.settings = d.settings || {}; d.settings.v2Write = on; d.log.push({ at: new Date().toISOString(), dev: S.device.name, act: 'ayar', op: 'v2 yazımı ' + (on ? 'açıldı' : 'kapatıldı') }); }); toast(on ? 'v2 yazımı açık' : 'v2 yazımı kapalı'); }
+  catch (err) { e.target.checked = !on; toast(err.message, true); } finally { busy(null); }
+});
+$('#set-v2all').addEventListener('click', async () => {
+  if (!(S.admin && S.admin.settings && S.admin.settings.v2Write)) return toast('Önce "v2 kopyasını da yaz" seçeneğini açın.', true);
+  busy('Okunuyor…');
+  let fresh; try { fresh = await readLicense(); } catch (e) { busy(null); return toast(e.message, true); } finally { busy(null); }
+  S.base = fresh;
+  const todo = [];
+  busy('v2 kimlikleri hesaplanıyor…');
+  for (const [k, e] of Object.entries(fresh.keys)) {
+    if (!e || typeof e !== 'object') continue;
+    const { id, key } = await v2Derive(k), cur = fresh.v2 && fresh.v2[id];
+    let ok = false;
+    if (cur) try { const raw = unb64(cur); const pt = JSON.parse(td.decode(await crypto.subtle.decrypt({ name: 'AES-GCM', iv: raw.slice(0, 12), additionalData: te.encode(id) }, key, raw.slice(12)))); delete pt.v; ok = eq(pt, e); } catch (x) {}
+    if (!ok) todo.push(k);
+  }
+  busy(null);
+  if (!todo.length) return toast('Tüm v2 kopyaları güncel.');
+  const v2Only = { title: '🧬 v2 kopyalarını tamamla (' + todo.length + ')', touched: [], mutate: async n => { n.v2 = n.v2 && typeof n.v2 === 'object' ? n.v2 : {}; for (const k of todo) { const { id, val } = await v2Seal(k, n.keys[k]); n.v2[id] = val; } } };
+  // keys değişmediği için özet satırı yok; ayrı onayla yazılır
+  if (!(await confirmSheet(v2Only.title, h('p', { text: todo.length + ' lisansın şifreli v2 kopyası yazılacak. Lisansların kendisi değişmez.' }), 'Yaz'))) return;
+  busy('Yazılıyor…');
+  try {
+    const again = await readLicense();
+    if (!eq(again, fresh)) throw new Error('Bu sırada kayıt değişti, tekrar deneyin.');
+    const next = clone(fresh); await v2Only.mutate(next); checkInvariants(fresh, next, [], []);
+    await backup(fresh); await writeLicense(next); S.base = next;
+    await saveAdmin(d => d.log.push({ at: new Date().toISOString(), dev: S.device.name, act: 'v2', op: 'v2 kopyaları tamamlandı (' + todo.length + ')' }));
+    toast('✅ v2 kopyaları yazıldı');
+  } catch (e) { toast(e.message, true); } finally { busy(null); renderAll(); }
+});
+
+// ── Hakkında: sürüm + bu betiğin SHA-256 özeti (CSP'deki özetle aynı olmalı) ──
+(async () => {
+  const src = document.currentScript ? document.currentScript.textContent : '';
+  const sum = b64(new Uint8Array(await crypto.subtle.digest('SHA-256', te.encode(src))));
+  $('#about').textContent = 'DigitaraLab Lisans · sürüm ' + VERSION + ' · kod özeti sha256-' + sum;
+})();
+
+// ── Açılış ────────────────────────────────────────
+(async () => {
+  try { show((await DB.get('vault')) ? 'lock' : 'setup'); }
+  catch (e) { show('setup'); $('#s-err').textContent = 'Bu tarayıcı cihaz kasasını açamadı (özel pencere olabilir).'; }
+})();
+</script>
+</body>
+</html>
