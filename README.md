@@ -9,6 +9,9 @@ Bin kimlikleri ve JSONBin Master Key kurulumda girilir. Yönetici şifresinden P
 - Sayfanın altındaki "kod özeti", derleme çıktısındaki özetle aynı olmalıdır.
 - Yönetim kaydı (işlem günlüğü, müşteri kimlikleri, ayarlar) ayrı bir JSONBin kaydındadır ve yönetici
   şifresiyle şifrelidir.
+⛔ **KURAL:** TÜM müşteriler 0.3.2'ye geçene kadar JSONBin'deki `keys` alanı **asla silinmez, yapısı değiştirilmez**
+(0.3.1 ve öncesi yalnız `keys`'i okur). Panel her lisans değişikliğini `keys`'e yazar; şifreli `v2` kopyası bunun yanına eklenir, yerine geçmez.
+
 - Lisans kaydında `keys` altındaki alanlar silinmez ve adları değişmez. Eski DigiPark sürümleri bu alanları okur.
 - `v2`: anahtardan türetilen kimlik (PBKDF2-SHA256, 200.000 tur, tuz `DigitaraLab/DigiPark/lisans/v2`,
   64 bayt: ilk 16 bayt kimlik (hex), sonraki 32 bayt AES-GCM anahtarı). Değer `base64(iv[12] ‖ şifreli)`
