@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-/xbPod4HmEWQrxUiOAc/hASHMuW0bfgmERW1xyeSTrc='; style-src 'unsafe-inline'; connect-src https://api.jsonbin.io; img-src 'self' data:; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-mWsC0LLRsT8e2sTZ4LITyzNbZwl8ppfj2LmLhv3icFw='; style-src 'unsafe-inline'; connect-src https://api.jsonbin.io; img-src 'self' data:; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
 <meta name="robots" content="noindex, nofollow, noarchive">
 <meta name="referrer" content="no-referrer">
 <meta name="theme-color" content="#0f2a44">
@@ -263,8 +263,7 @@ footer{text-align:center;font-size:12px;color:var(--muted);padding:8px 0 0;word-
       </div>
       <div class="card">
         <h2>🧬 Şifreli kayıt (v2)</h2>
-        <p class="muted">Açıkken her değişiklikte müşterinin kaydı, anahtarı açıkta görünmeyen şifreli bir kopya olarak <span class="mono">v2</span> alanına da yazılır (DigiPark 0.3.2 ve sonrası okur). Eski kayıtlar olduğu gibi kalır.</p>
-        <label class="check"><input type="checkbox" id="set-v2"> <span>v2 kopyasını da yaz</span></label>
+        <p class="muted">Her değişiklikte müşterinin kaydı <span class="mono">keys</span> alanına (eski sürümler için, her zaman) ve anahtarı açıkta görünmeyen şifreli bir kopya olarak <span class="mono">v2</span> alanına birlikte yazılır (DigiPark 0.3.2 ve sonrası okur). Silinen anahtarın v2 kopyası da silinir. Dokunulmamış eski kayıtların kopyası için aşağıdaki düğmeyi kullanın.</p>
         <button class="btn block" id="set-v2all" type="button">Eksik v2 kopyalarını tamamla</button>
       </div>
       <div class="card">
@@ -466,7 +465,7 @@ function cfg() {
   const s = (S.admin && S.admin.settings) || {}, pk = cleanPackages(s.packages);
   const tpl = Object.assign({}, DEFAULT_TPL);
   if (s.tpl && typeof s.tpl === 'object') for (const [k] of TPL_META) if (typeof s.tpl[k] === 'string' && s.tpl[k].trim()) tpl[k] = s.tpl[k];
-  return { v2Write: !!s.v2Write, trialDays: posInt(s.trialDays, 365) || 7, loyTrialDays: posInt(s.loyTrialDays, 365) || 14,
+  return { trialDays: posInt(s.trialDays, 365) || 7, loyTrialDays: posInt(s.loyTrialDays, 365) || 14,
            packages: pk.length ? pk : DEFAULT_PACKAGES, tpl };
 }
 const fmtTL = n => '₺' + Number(n).toLocaleString('tr-TR');
@@ -511,7 +510,7 @@ const writeLicense = rec => jb(S.secrets.masterKey, 'PUT', binPath(S.secrets.lic
 
 // ── Yönetim kaydı (JSONBin'de, yönetici şifresiyle şifreli) ──
 function adminDefaults() {
-  return { schema: 1, createdAt: new Date().toISOString(), customers: {}, log: [], settings: { v2Write: false } };
+  return { schema: 1, createdAt: new Date().toISOString(), customers: {}, log: [], settings: {} };
 }
 async function adminSealWrap(wrapBase, data, key) {
   const box = await seal(key, data, ADMIN_APP);
@@ -855,8 +854,8 @@ function diffLines(fresh, next, touched) {
   }
   return out;
 }
+// KURAL: keys her zaman yazılır; v2 yanına eklenir (tüm müşteriler 0.3.2'ye geçene kadar keys silinmez)
 async function applyV2(next, touched) {
-  if (!S.admin || !S.admin.settings || !S.admin.settings.v2Write) return;
   next.v2 = next.v2 && typeof next.v2 === 'object' ? next.v2 : {};
   for (const k of touched) {
     if (next.keys[k]) { const { id, val } = await v2Seal(k, next.keys[k]); next.v2[id] = val; }
@@ -1197,7 +1196,6 @@ async function renderSettings() {
     h('b', { text: 'Yönetim hesabı' }), h('span', { text: s.adminMasterKey ? '🏦 Ayrı JSONBin hesabı' : 'Lisans kaydıyla aynı hesap' }),
     h('b', { text: 'Bu cihaz' }), h('span', { text: S.device.name }),
     h('b', { text: 'Lisans sayısı' }), h('span', { text: String(Object.keys(S.base.keys).length) }));
-  $('#set-v2').checked = !!(S.admin && S.admin.settings && S.admin.settings.v2Write);
   const list = ((await DB.get('backups')) || []).slice().reverse();
   $('#set-baks').replaceChildren(...(list.length ? list.map(b => {
     const btn = h('button', { class: 'btn', type: 'button', text: '⬇️ İndir' });
@@ -1383,13 +1381,7 @@ $('#set-fullbak').addEventListener('click', async () => {
   busy('Okunuyor…');
   try { download('lisans-tam-yedek-' + stamp() + '.json', await readLicense()); } catch (e) { toast(e.message, true); } finally { busy(null); }
 });
-$('#set-v2').addEventListener('change', async e => {
-  const on = e.target.checked; busy('Kaydediliyor…');
-  try { await saveAdmin(d => { d.settings = d.settings || {}; d.settings.v2Write = on; d.log.push({ at: new Date().toISOString(), dev: S.device.name, act: 'ayar', op: 'v2 yazımı ' + (on ? 'açıldı' : 'kapatıldı') }); }); toast(on ? 'v2 yazımı açık' : 'v2 yazımı kapalı'); }
-  catch (err) { e.target.checked = !on; toast(err.message, true); } finally { busy(null); }
-});
 $('#set-v2all').addEventListener('click', async () => {
-  if (!(S.admin && S.admin.settings && S.admin.settings.v2Write)) return toast('Önce "v2 kopyasını da yaz" seçeneğini açın.', true);
   busy('Okunuyor…');
   let fresh; try { fresh = await readLicense(); } catch (e) { busy(null); return toast(e.message, true); } finally { busy(null); }
   S.base = fresh;
