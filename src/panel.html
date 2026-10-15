@@ -480,7 +480,7 @@ function loyState(e) {
   return e.profile === 'sadakat' ? Object.assign({}, t, { mode: 'on', sadakat: true }) : t;
 }
 function loyTrial(e) {
-  if (e.loyalty === true) return { mode: 'on' };
+  if (e.loyalty === true) return isDate(e.loyaltyExpiry) ? { mode: 'on', until: e.loyaltyExpiry, ended: daysLeft(e.loyaltyExpiry) < 0, left: daysLeft(e.loyaltyExpiry) } : { mode: 'on' };
   if (e.loyalty !== 'trial') return { mode: 'off' };
   const days = posInt(e.loyaltyTrialDays, 365) || 30, start = isDate(e.loyaltyTrialStart) ? e.loyaltyTrialStart : null;
   if (!start) return { mode: 'trial', days, start: null };
@@ -763,7 +763,8 @@ function matches(key, e, f) {
 function moduleTags(e) {
   const t = [], ls = loyState(e);
   if (ls.sadakat) t.push(['b-ok', '👤 Sadakat profili · ⭐ dahil']);
-  else if (ls.mode === 'on') t.push(['b-ok', '⭐ Puan Kulübü']);
+  else if (ls.mode === 'on') t.push(!ls.until ? ['b-ok', '⭐ Puan Kulübü'] : ls.ended ? ['b-bad', '⭐ Puan Kulübü süresi doldu · ' + fmtDate(ls.until)]
+    : [ls.left <= 7 ? 'b-warn' : 'b-ok', '⭐ Puan Kulübü · ' + fmtDate(ls.until) + ' tarihine kadar']);
   else if (ls.mode === 'trial') t.push(!ls.start ? ['b-warn', '⭐ Puan denemesi · ' + ls.days + ' gün (başlangıç uygulamada)']
     : ls.expired ? ['b-bad', '⭐ Puan denemesi bitti · ' + fmtDate(ls.last)] : ['b-warn', '⭐ Puan denemesi · ' + ls.left + ' gün kaldı']);
   if (e.noBranding === true) t.push(['b-off', '🏷️ İbaresiz']);
@@ -813,6 +814,7 @@ function validateEntry(k, e, isNew) {
   if ('noBranding' in e && typeof e.noBranding !== 'boolean') bad('"noBranding" true/false olmalı');
   if ('loyaltyTrialStart' in e && !isDate(e.loyaltyTrialStart)) bad('"loyaltyTrialStart" YYYY-AA-GG olmalı');
   if ('loyaltyTrialDays' in e && !posInt(e.loyaltyTrialDays, 365)) bad('"loyaltyTrialDays" 1–365 arası tam sayı olmalı');
+  if ('loyaltyExpiry' in e && !isDate(e.loyaltyExpiry)) bad('"loyaltyExpiry" YYYY-AA-GG olmalı');
 }
 function checkInvariants(fresh, next, touched, newKeys) {
   const fk = fresh.keys, nk = next.keys;
@@ -829,11 +831,11 @@ function checkInvariants(fresh, next, touched, newKeys) {
   for (const k of touched) if (k in nk) validateEntry(k, nk[k], newKeys.includes(k));
 }
 const FIELD = { active: 'Durum', expiry: 'Bitiş', business: 'İşletme', loyalty: 'Puan Kulübü', profile: 'Profil', noBranding: 'İbare', cid: 'Müşteri kimliği', createdAt: 'Oluşturma',
-  loyaltyTrialStart: 'Puan denemesi başlangıcı', loyaltyTrialDays: 'Puan denemesi (gün)' };
+  loyaltyTrialStart: 'Puan denemesi başlangıcı', loyaltyTrialDays: 'Puan denemesi (gün)', loyaltyExpiry: 'Puan Kulübü bitişi' };
 function showVal(f, v) {
   if (v === undefined) return '—';
   if (f === 'active') return v ? 'Açık' : 'Kapalı';
-  if (f === 'expiry' || f === 'loyaltyTrialStart') return fmtDate(v);
+  if (f === 'expiry' || f === 'loyaltyTrialStart' || f === 'loyaltyExpiry') return fmtDate(v);
   if (f === 'loyalty') return v === true ? 'Aktif' : v === 'trial' ? 'Deneme' : 'Kapalı';
   if (f === 'noBranding') return v === true ? 'Gizli' : 'Görünür';
   if (f === 'profile') return v === 'sadakat' ? 'Sadakat' : 'Standart';
@@ -951,9 +953,11 @@ function waVars(kind, k, e, extra) {
   const fromD = isDate(e.createdAt) && e.createdAt <= e.expiry ? e.createdAt : today;
   if (kind === 'trial') v.gun = x.gun || Math.max(1, daysBetween(fromD, e.expiry));
   if (kind === 'full' || kind === 'renew') v.ay = x.ay || (isDate(e.expiry) && e.expiry > today ? monthsBetween(kind === 'renew' ? today : fromD, e.expiry) : '');
+  if (kind === 'loyFull' && e.loyalty === true && isDate(e.loyaltyExpiry)) v.bitis = fmtDate(e.loyaltyExpiry);
   if (kind === 'loyTrial' || kind === 'loyExpired') {
     v.gun = x.gun || ls.days || '';
     if (ls.last) v.bitis = fmtDate(ls.last);
+    if (kind === 'loyExpired' && ls.until) v.bitis = fmtDate(ls.until);
   }
   if (!v.ay) v.ay = isDate(e.expiry) && e.expiry > today ? monthsBetween(fromD, e.expiry) : '';
   if (!v.gun) v.gun = Math.max(0, daysLeft(e.expiry)) || '';
@@ -998,6 +1002,9 @@ async function modulesKey(k) {
   let prof = e.profile === 'sadakat' ? 'sadakat' : '', noBr = e.noBranding === true;
   const pick = dayPicker(loy === 'trial' && posInt(e.loyaltyTrialDays, 365) ? e.loyaltyTrialDays : c.loyTrialDays);
   const restart = h('input', { type: 'checkbox' });
+  const untilIn = h('input', { type: 'date', value: isDate(e.loyaltyExpiry) ? e.loyaltyExpiry : '' });
+  const onBox = h('div', { class: loy === 'on' ? '' : 'hidden' }, h('label', { text: 'Puan Kulübü bitiş tarihi (isteğe bağlı)' }), untilIn,
+    h('p', { class: 'note', text: 'Boş bırakılırsa ana lisansla birlikte biter. DigiPark 0.3.1 bu tarihi okumaz.' }));
   const curTxt = ls.mode !== 'trial' ? null : !ls.start ? 'Şu an deneme: ' + ls.days + ' gün, başlangıç uygulamada (patron açtığında).'
     : ls.expired ? 'Şu an: deneme ' + fmtDate(ls.last) + ' tarihinde bitti.' : 'Şu an: deneme, ' + ls.left + ' gün kaldı (son gün ' + fmtDate(ls.last) + ').';
   const trialBox = h('div', { class: loy === 'trial' ? '' : 'hidden' },
@@ -1008,8 +1015,8 @@ async function modulesKey(k) {
     h('p', { class: 'note', text: 'Not: DigiPark 0.3.1 gün sayısını okumaz, denemeyi 30 gün sayar.' }));
   const body = h('div', {}, h('p', { text: e.business + ' · ' + k }),
     h('label', { text: '⭐ Puan Kulübü' }),
-    segEl([['off', 'Kapalı'], ['trial', 'Deneme'], ['on', 'Aktif']], loy, v => { loy = v; trialBox.classList.toggle('hidden', v !== 'trial'); }),
-    trialBox,
+    segEl([['off', 'Kapalı'], ['trial', 'Deneme'], ['on', 'Aktif']], loy, v => { loy = v; trialBox.classList.toggle('hidden', v !== 'trial'); onBox.classList.toggle('hidden', v !== 'on'); }),
+    trialBox, onBox,
     h('label', { text: '👤 Profil' }),
     segEl([['', 'Standart'], ['sadakat', 'Sadakat']], prof, v => { prof = v; }),
     h('p', { class: 'note', text: 'Sadakat profili: başlık işletme adı olur, Puan Kulübü her zaman açıktır.' }),
@@ -1018,6 +1025,8 @@ async function modulesKey(k) {
   if (!(await sheet('🧩 Modüller', body, [{ label: 'Vazgeç', value: false }, { label: 'Devam', value: true, cls: 'primary' }]))) return;
   const days = loy === 'trial' ? pick.get() : null;
   if (loy === 'trial' && !days) return toast('Deneme gün sayısı 1–365 arası olmalı.', true);
+  const until = loy === 'on' ? untilIn.value : '';
+  if (until && (!isDate(until) || until < todayKey())) return toast('Puan Kulübü bitiş tarihi bugünden önce olamaz.', true);
   const today = todayKey();
   const ok = await commit({ title: '🧩 Modüller', touched: [k],
     mutate: n => {
@@ -1025,9 +1034,11 @@ async function modulesKey(k) {
       if (loy === 'trial') {
         const keep = x.loyalty === 'trial' && isDate(x.loyaltyTrialStart) && !restart.checked;
         x.loyalty = 'trial'; x.loyaltyTrialDays = days; if (!keep) x.loyaltyTrialStart = today;
+        delete x.loyaltyExpiry;
       } else {
+        // Deneme alanları geçmiş için kalır (uygulama, deneme bitişinden aktife kadar olan boşluğu bunlarla hesaplar)
         if (loy === 'on') x.loyalty = true; else if ('loyalty' in x) x.loyalty = false;
-        delete x.loyaltyTrialStart; delete x.loyaltyTrialDays;
+        if (loy === 'on' && until) x.loyaltyExpiry = until; else delete x.loyaltyExpiry;
       }
       if (prof === 'sadakat') x.profile = 'sadakat'; else delete x.profile;
       if (noBr) x.noBranding = true; else delete x.noBranding;
@@ -1035,7 +1046,7 @@ async function modulesKey(k) {
   if (!ok) return;
   const now = S.base.keys[k];
   if (loy === 'trial' && (e.loyalty !== 'trial' || e.loyaltyTrialStart !== now.loyaltyTrialStart || e.loyaltyTrialDays !== now.loyaltyTrialDays)) waSheet('loyTrial', k, now, { gun: days });
-  else if (loy === 'on' && e.loyalty !== true) waSheet('loyFull', k, now);
+  else if (loy === 'on' && (e.loyalty !== true || e.loyaltyExpiry !== now.loyaltyExpiry)) waSheet('loyFull', k, now);
 }
 async function deleteKey(k) {
   const e = S.base.keys[k];
