@@ -456,6 +456,12 @@ const DEFAULT_TPL = {
     'Puanlar, kartlar ve geçmiş kayıtlarınız silinmedi; Puan Kulübü\'nü aktif ettiğinizde kaldığınız yerden devam edersiniz ✅\n\n' +
     'Puan Kulübü\'ne geçmek için bize ulaşın.\nDigitaraLab 🚀',
 };
+// Yönetim kaydında (şifreli) tutulan, keys'e HİÇ yazılmayan anahtar bilgileri:
+//   links: {anahtar: müşteri kimliği}  — eski kayıtları müşteriye bağlama
+//   keyTypes: {anahtar: 'full'|'trial'} — panelde gösterilecek tür (ör. DENEME- önekli ama ücretli eski müşteri)
+const admMap = name => (S.admin && S.admin[name] && typeof S.admin[name] === 'object') ? S.admin[name] : {};
+const cidOf = (k, e) => (e && e.cid) || admMap('links')[k] || null;
+function isTrialKey(k) { const t = admMap('keyTypes')[k]; return t === 'full' ? false : t === 'trial' ? true : k.startsWith('DENEME-'); }
 function posInt(v, max) { const n = typeof v === 'string' && v.trim() ? Number(v) : v; return Number.isInteger(n) && n >= 1 && n <= (max || 3650) ? n : null; }
 function cleanPackages(list) {
   return (Array.isArray(list) ? list : []).filter(p => p && typeof p.name === 'string' && p.name.trim() && posInt(p.months, 120) && Number.isInteger(p.price) && p.price >= 0)
@@ -754,7 +760,7 @@ function status(key, e) {
 function matches(key, e, f) {
   const st = status(key, e).f;
   if (f === 'all') return true;
-  if (f === 'trial') return key.startsWith('DENEME-');
+  if (f === 'trial') return isTrialKey(key);
   if (f === 'loy') return loyState(e).mode === 'trial';
   if (f === 'active') return st === 'active' || st === 'soon';
   return st === f;
@@ -781,7 +787,7 @@ function renderList() {
     return h('div', { class: 'card lic' },
       h('div', { class: 'top' }, h('div', { class: 'biz', text: e.business || '(adsız)' }), h('span', { class: 'badge ' + st.cls, text: st.text })),
       h('code', { text: k }),
-      h('div', { class: 'meta', text: 'Bitiş: ' + fmtDate(e.expiry) + (k.startsWith('DENEME-') ? ' · Deneme' : '') }),
+      h('div', { class: 'meta', text: 'Bitiş: ' + fmtDate(e.expiry) + (isTrialKey(k) ? ' · Deneme' : '') + (admMap('keyTypes')[k] ? ' (türü panelde işaretli)' : '') }),
       moduleTags(e),
       h('div', { class: 'acts' },
         h('button', { class: 'btn', type: 'button', 'data-act': 'copy', 'data-key': k, title: 'Anahtarı kopyala', text: '📋' }),
@@ -797,7 +803,7 @@ $('#chips').addEventListener('click', e => { const b = e.target.closest('.chip')
 $('#list').addEventListener('click', e => {
   const b = e.target.closest('button[data-act]'); if (!b) return;
   const k = b.dataset.key, ent = S.base.keys[k]; if (!ent) return;
-  ({ copy: () => copyText(k), wa: () => waSheet(k.startsWith('DENEME-') ? 'trial' : 'full', k, ent), mod: () => modulesKey(k), renew: () => renewKey(k), toggle: () => toggleKey(k), del: () => deleteKey(k) })[b.dataset.act]();
+  ({ copy: () => copyText(k), wa: () => waSheet(isTrialKey(k) ? 'trial' : 'full', k, ent), mod: () => modulesKey(k), renew: () => renewKey(k), toggle: () => toggleKey(k), del: () => deleteKey(k) })[b.dataset.act]();
 });
 
 // ── Güvenli kaydetme ──────────────────────────────
@@ -1012,7 +1018,12 @@ async function modulesKey(k) {
     ls.start ? h('label', { class: 'check' }, restart, h('span', { text: 'Denemeyi bugünden yeniden başlat' })) : null,
     h('p', { class: 'note', text: ls.start ? 'Gün sayısını değiştirirseniz deneme ilk başladığı günden itibaren sayılır.' : 'Deneme bugünden başlar.' }),
     h('p', { class: 'note', text: 'Not: DigiPark 0.3.1 gün sayısını okumaz, denemeyi 30 gün sayar.' }));
+  const curType = admMap('keyTypes')[k] || '';
+  let ktype = curType;
   const body = h('div', {}, h('p', { text: e.business + ' · ' + k }),
+    h('label', { text: '📄 Panelde lisans türü' }),
+    segEl([['', 'Önekine göre (' + (k.startsWith('DENEME-') ? 'Deneme' : 'Tam') + ')'], ['full', 'Tam lisans'], ['trial', 'Deneme']], curType, v => { ktype = v; }),
+    h('p', { class: 'note', text: 'Yalnız panelde (şifreli yönetim kaydında) tutulur; lisans kaydına ve uygulamaya yansımaz.' }),
     h('label', { text: '⭐ Puan Kulübü' }),
     segEl([['off', 'Kapalı'], ['trial', 'Deneme'], ['on', 'Aktif']], loy, v => { loy = v; trialBox.classList.toggle('hidden', v !== 'trial'); onBox.classList.toggle('hidden', v !== 'on'); }),
     trialBox, onBox,
@@ -1027,6 +1038,17 @@ async function modulesKey(k) {
   const until = loy === 'on' ? untilIn.value : '';
   if (until && (!isDate(until) || until < todayKey())) return toast('Puan Kulübü bitiş tarihi bugünden önce olamaz.', true);
   const today = todayKey();
+  if (ktype !== curType) {
+    const tl = v => v === 'full' ? 'Tam lisans' : v === 'trial' ? 'Deneme' : 'Önekine göre';
+    if (!(await adminKeyOp('📄 Panelde lisans türü', [e.business + ' · ' + k + ': ' + tl(curType) + ' → ' + tl(ktype)],
+      d => { d.keyTypes = d.keyTypes || {}; if (ktype) d.keyTypes[k] = ktype; else delete d.keyTypes[k]; },
+      [{ act: 'tür', key: k, biz: e.business, from: tl(curType), to: tl(ktype) }]))) return;
+  }
+  const x0 = S.base.keys[k], want = { loyalty: loy, prof, noBr };
+  const same = (loy === (x0.loyalty === true ? 'on' : x0.loyalty === 'trial' ? 'trial' : 'off')) && loy !== 'trial' && (loy !== 'on' || (untilIn.value || '') === (x0.loyaltyExpiry || ''))
+    && prof === (x0.profile === 'sadakat' ? 'sadakat' : '') && noBr === (x0.noBranding === true) && (('profile' in x0) === (prof === 'sadakat')) && (('noBranding' in x0) === noBr)
+    && (loy !== 'off' || !('loyaltyExpiry' in x0));
+  if (same) return;   // yalnız tür değişti (ya da hiçbir şey) → lisans kaydına yazılmaz
   const ok = await commit({ title: '🧩 Modüller', touched: [k],
     mutate: n => {
       const x = n.keys[k]; if (!x) throw new Error('Kayıt bulunamadı');
@@ -1062,8 +1084,8 @@ function customerGroups() {
   const g = new Map();
   for (const [k, e] of Object.entries(S.base.keys)) {
     if (!e || typeof e !== 'object') continue;
-    const id = e.cid ? 'cid:' + e.cid : 'name:' + normName(e.business);
-    if (!g.has(id)) g.set(id, { id, cid: e.cid || null, name: e.business, keys: [] });
+    const c = cidOf(k, e), id = c ? 'cid:' + c : 'name:' + normName(e.business);
+    if (!g.has(id)) g.set(id, { id, cid: c, name: e.business, keys: [] });
     g.get(id).keys.push(k);
   }
   return [...g.values()].sort((a, b) => String(a.name).localeCompare(String(b.name), 'tr'));
@@ -1074,8 +1096,8 @@ function newCandidates() {
   const out = [];
   for (const [k, e] of Object.entries(S.base.keys)) {
     if (!e || typeof e !== 'object' || !e.active) continue;
-    if (grp && grp.cid && e.cid === grp.cid) out.push({ k, e, checked: true, why: 'Bu müşteriye ait' });
-    else if (name && sameName(name, e.business)) out.push({ k, e, checked: false, why: e.cid ? 'Adı benzer ama başka müşteri kimliği — aynı işletme olduğundan eminseniz işaretleyin' : 'Adı benzer (eski kayıt, müşteri kimliği yok) — aynı işletme olduğundan eminseniz işaretleyin' });
+    if (grp && grp.cid && cidOf(k, e) === grp.cid) out.push({ k, e, checked: true, why: 'Bu müşteriye ait' });
+    else if (name && sameName(name, e.business)) out.push({ k, e, checked: false, why: cidOf(k, e) ? 'Adı benzer ama başka müşteri kimliği — aynı işletme olduğundan eminseniz işaretleyin' : 'Adı benzer (eski kayıt, müşteri kimliği yok) — aynı işletme olduğundan eminseniz işaretleyin' });
   }
   return out;
 }
@@ -1279,9 +1301,10 @@ $('#set-tpl-save').addEventListener('click', async () => {
   if (await saveSetting('Şablon güncellendi: ' + label, st => { st.tpl = Object.assign({}, st.tpl); if (t === DEFAULT_TPL[id]) delete st.tpl[id]; else st.tpl[id] = t; })) renderTpl();
 });
 
-// Eski (müşteri kimliği olmayan) kayıtları adla gruplama — yalnız işaretlenenler bağlanır
+// Eski (müşteri kimliği olmayan) kayıtlar: adı benzeyenler gruplanır, tek başına olanlar da listelenir.
+// Bağlantı ve tür işareti YALNIZ şifreli yönetim kaydına yazılır; lisans kaydındaki keys'e dokunulmaz.
 function legacyGroups() {
-  const keys = S.base.keys, loose = Object.keys(keys).filter(k => keys[k] && typeof keys[k] === 'object' && !keys[k].cid);
+  const keys = S.base.keys, loose = Object.keys(keys).filter(k => keys[k] && typeof keys[k] === 'object' && !cidOf(k, keys[k]));
   const parent = new Map(loose.map(k => [k, k]));
   const find = k => { while (parent.get(k) !== k) k = parent.get(k); return k; };
   for (let i = 0; i < loose.length; i++) for (let j = i + 1; j < loose.length; j++)
@@ -1291,33 +1314,53 @@ function legacyGroups() {
   const cidGroups = customerGroups().filter(g => g.cid);
   return [...groups.values()].map(ks => ({ keys: ks.sort((a, b) => String(keys[a].expiry).localeCompare(String(keys[b].expiry))),
     cands: cidGroups.filter(g => ks.some(k => sameName(g.name, keys[k].business))) }))
-    .filter(g => g.keys.length > 1 || g.cands.length)
-    .sort((a, b) => String(keys[a.keys[0]].business).localeCompare(String(keys[b.keys[0]].business), 'tr'));
+    .sort((a, b) => (b.keys.length > 1 || b.cands.length) - (a.keys.length > 1 || a.cands.length) || String(keys[a.keys[0]].business).localeCompare(String(keys[b.keys[0]].business), 'tr'));
 }
+const TYPE_OPTS = [['', 'Önekine göre'], ['full', 'Tam lisans (ücretli)'], ['trial', 'Deneme']];
 function renderLegacy() {
-  const keys = S.base.keys, gs = legacyGroups(), box = $('#set-legacy');
-  const loose = Object.values(keys).filter(e => e && typeof e === 'object' && !e.cid).length;
-  if (!gs.length) return box.replaceChildren(h('p', { class: 'muted', text: loose ? 'Adı benzeyen kimliksiz kayıt yok (' + loose + ' kimliksiz anahtar tek başına).' : 'Tüm anahtarların müşteri kimliği var.' }));
-  box.replaceChildren(h('p', { class: 'muted', text: gs.length + ' olası grup · ' + loose + ' kimliksiz anahtar' }), ...gs.map((g, gi) => {
+  const keys = S.base.keys, gs = legacyGroups(), box = $('#set-legacy'), types = admMap('keyTypes');
+  if (!gs.length) return box.replaceChildren(h('p', { class: 'muted', text: 'Tüm anahtarlar bir müşteriye bağlı.' }));
+  const n = gs.reduce((a, g) => a + g.keys.length, 0);
+  box.replaceChildren(h('p', { class: 'muted', text: n + ' kimliksiz anahtar · ' + gs.filter(g => g.keys.length > 1 || g.cands.length).length + ' olası grup' }), ...gs.map((g, gi) => {
+    const multi = g.keys.length > 1 || g.cands.length;
     const target = h('select', { 'data-g': String(gi) }, h('option', { value: '', text: '➕ Yeni müşteri kimliği' }), g.cands.map(c => h('option', { value: c.cid, text: c.name + ' (' + c.keys.length + ' anahtar, ' + c.cid + ')' })));
-    const go = h('button', { class: 'btn primary block', type: 'button', text: '🔗 İşaretlileri aynı müşteri yap' });
-    const el = h('div', { class: 'grp' }, h('h4', { text: keys[g.keys[0]].business }),
-      ...g.keys.map(k => h('label', { class: 'check' }, h('input', { type: 'checkbox', 'data-k': k }),
-        h('span', {}, h('b', { text: keys[k].business }), ' · ', h('span', { class: 'mono', text: k }), h('br'),
-          h('span', { class: 'muted', text: 'Bitiş ' + fmtDate(keys[k].expiry) + ' · ' + (keys[k].active ? 'Açık' : 'Kapalı') })))),
+    const go = h('button', { class: 'btn primary block', type: 'button', text: multi ? '🔗 İşaretlileri aynı müşteri yap' : '🔗 Bu anahtar için müşteri kaydı aç' });
+    const el = h('div', { class: 'grp' }, h('h4', { text: keys[g.keys[0]].business + (multi ? '' : ' · tek anahtar') }),
+      ...g.keys.map(k => h('div', {},
+        h('label', { class: 'check' }, h('input', { type: 'checkbox', 'data-k': k }),
+          h('span', {}, h('b', { text: keys[k].business }), ' · ', h('span', { class: 'mono', text: k }), h('br'),
+            h('span', { class: 'muted', text: 'Bitiş ' + fmtDate(keys[k].expiry) + ' · ' + (keys[k].active ? 'Açık' : 'Kapalı') }))),
+        h('div', { class: 'row', style: 'align-items:center;margin:-2px 0 8px 42px' }, h('span', { class: 'muted', text: 'Panelde tür:' }),
+          h('select', { 'data-t': k, style: 'flex:1;min-height:40px' }, TYPE_OPTS.map(([v, l]) => h('option', { value: v, text: l, selected: (types[k] || '') === v })))))),
       g.cands.length ? [h('label', { text: 'Bağlanacak müşteri' }), target] : null, h('div', { style: 'margin-top:8px' }, go));
     go.addEventListener('click', () => linkLegacy(el, g.cands.length ? target.value : ''));
     return el;
   }));
 }
+// Yönetim kaydına anahtar bilgisi yazar (keys'e dokunmaz); önce onay penceresi
+async function adminKeyOp(title, lines, mutate, logs) {
+  if (!needAdmin()) return false;
+  const ok = await confirmSheet(title, h('div', {}, h('p', { text: 'Şunu yönetim kaydına (şifreli) kaydediyorum:' }), h('ul', {}, lines.map(l => h('li', { text: l }))),
+    h('p', { class: 'muted', text: 'Lisans kaydındaki keys alanına dokunulmaz; DigiPark uygulamaları bu bilgiyi görmez.' })), 'Kaydet');
+  if (!ok) return false;
+  busy('Kaydediliyor…');
+  try {
+    await saveAdmin(d => { mutate(d); const at = new Date().toISOString(); for (const l of logs) d.log.push(Object.assign({ at, dev: S.device.name, op: title }, l)); });
+    toast('✅ Kaydedildi'); return true;
+  } catch (e) { toast(e.message, true); return false; } finally { busy(null); renderAll(); }
+}
 async function linkLegacy(el, toCid) {
   const ks = [...el.querySelectorAll('input[data-k]')].filter(i => i.checked).map(i => i.dataset.k);
   if (!ks.length) return toast('Önce aynı işletmeye ait anahtarları işaretleyin.', true);
-  if (!toCid && ks.length < 2) return toast('Yeni müşteri için en az iki anahtar işaretleyin ya da var olan müşteriyi seçin.', true);
-  const cid = toCid || genCid(), name = S.base.keys[ks[0]].business;
-  await commit({ title: '🔗 Eski kayıtları müşteriye bağla', touched: ks,
-    mutate: n => { for (const k of ks) { if (!n.keys[k]) throw new Error('Kayıt bulunamadı: ' + k); if (n.keys[k].cid) throw new Error(k + ' zaten bir müşteriye bağlı.'); n.keys[k].cid = cid; } },
-    adminMutate: d => { d.customers = d.customers || {}; if (!d.customers[cid]) d.customers[cid] = { name, createdAt: new Date().toISOString(), linked: true }; } });
+  const cid = toCid || genCid(), keys = S.base.keys, name = keys[ks[0]].business, types = admMap('keyTypes');
+  const tsel = k => el.querySelector('select[data-t="' + CSS.escape(k) + '"]').value;
+  const tl = v => (TYPE_OPTS.find(x => x[0] === v) || TYPE_OPTS[0])[1];
+  const lines = ks.map(k => keys[k].business + ' · ' + k + ' → ' + (toCid ? 'müşteri ' + cid : 'yeni müşteri ' + cid) + ((types[k] || '') !== tsel(k) ? ' · tür: ' + tl(tsel(k)) : ''));
+  await adminKeyOp('🔗 Eski kayıtları müşteriye bağla', lines, d => {
+    d.links = d.links || {}; d.keyTypes = d.keyTypes || {}; d.customers = d.customers || {};
+    for (const k of ks) { if (d.links[k]) throw new Error(k + ' zaten bir müşteriye bağlı.'); d.links[k] = cid; const t = tsel(k); if (t) d.keyTypes[k] = t; else delete d.keyTypes[k]; }
+    if (!d.customers[cid]) d.customers[cid] = { name, createdAt: new Date().toISOString(), linked: true };
+  }, ks.map(k => ({ act: 'bağla', key: k, biz: keys[k].business, to: cid, note: tsel(k) ? 'tür: ' + tl(tsel(k)) : undefined })));
 }
 
 // Master Key güncelleme (JSONBin'de anahtar yenilendiğinde) ve yönetim kaydını ayrı hesaba taşıma

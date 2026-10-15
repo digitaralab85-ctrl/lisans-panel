@@ -23,7 +23,10 @@ Bin kimlikleri ve JSONBin Master Key kurulumda girilir. Yönetici şifresinden P
   (YYYY-AA-GG) ve `loyaltyTrialDays` (1–365) yazılır. `profile: "sadakat"`, `noBranding: true` (ibare gizli).
 - **Ayarlar** (yönetim kaydında, şifreli): paketler (ad/ay/fiyat), deneme varsayılanları (ana 7, Puan Kulübü 14 gün),
   WhatsApp şablonları (`{isletme} {anahtar} {bitis} {ay} {gun}`). Fiyat yalnız günlüğe yazılır.
-- **Eski kayıtları müşteriye bağla**: kimliksiz anahtarlar ada göre gruplanır, yalnız işaretlenenlere `cid` yazılır.
+- **Eski kayıtları müşteriye bağla**: kimliksiz anahtarlar ada göre gruplanır (tek başına olanlar da listelenir).
+  Yalnız işaretlenenler bağlanır. Bağlantı (`links`) ve **panelde tür** işareti (`keyTypes`, ör. `DENEME-` önekli ama ücretli
+  eski müşteri → "Tam lisans") **yalnız şifreli yönetim kaydına** yazılır; lisans kaydındaki `keys`'e dokunulmaz.
+  Tür, kartın 🧩 Modüller penceresinden de değiştirilebilir.
 - **Yönetim kaydı ayrı hesapta**: kurulumda ya da Ayarlar › Yönetim kaydını taşı. Eski kayıtta yalnız şifreli
   "taşındı" işareti kalır; diğer cihazlar açılışta yeni hesabın Master Key'ini sorar. Master Key yenilenirse
   Ayarlar › Master Key'i güncelle (her cihazda).
