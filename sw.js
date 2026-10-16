@@ -1,6 +1,6 @@
 // DigitaraLab Lisans — çevrimdışı kabuk. Yalnız bu sitenin kendi dosyaları önbelleğe girer;
 // JSONBin (başka köken) isteklerine hiç dokunulmaz. Sayfa her açılışta önce ağdan istenir.
-const CACHE = 'dl-lisans-0.3.2-6b87709910';
+const CACHE = 'dl-lisans-0.3.3-c1b77fb8f0';
 const SHELL = ['./', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));

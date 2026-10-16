@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-638Za9S159i73vaJhgV8HLZH/n06q87l1GS6BaP+56g='; style-src 'unsafe-inline'; connect-src https://api.jsonbin.io; img-src 'self' data:; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-qEZSk4kbxdm63f+7SrdSGMxenNexL6Upgn0SPVx4auw='; style-src 'unsafe-inline'; connect-src https://api.jsonbin.io; img-src 'self' data:; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
 <meta name="robots" content="noindex, nofollow, noarchive">
 <meta name="referrer" content="no-referrer">
 <meta name="theme-color" content="#0f2a44">
@@ -294,7 +294,7 @@ footer{text-align:center;font-size:12px;color:var(--muted);padding:8px 0 0;word-
 // DigitaraLab Lisans paneli. Gizli bilgi İÇERMEZ: bin kimlikleri ve Master Key
 // kurulumda girilir, yönetici şifresinden türetilen anahtarla şifrelenip yalnız
 // bu cihazın IndexedDB'sinde tutulur.
-const VERSION = '0.3.2';
+const VERSION = '0.3.3';
 const API = 'https://api.jsonbin.io/v3';
 const VAULT_ITER = 600000;                 // yönetici şifresi → kasa / yönetim kaydı
 const V2_ITER = 200000;                    // lisans anahtarı → v2 kimlik + içerik anahtarı (uygulamayla aynı)
@@ -485,7 +485,7 @@ const fillTpl = (t, vars) => t.replace(/\{(isletme|anahtar|bitis|ay|gun)\}/g, (m
 const daysBetween = (a, b) => Math.round((utc(b) - utc(a)) / 864e5);
 const monthsBetween = (a, b) => Math.max(1, Math.round(daysBetween(a, b) / 30.4375));
 // Puan Kulübü durumu, uygulamayla aynı hesap: deneme başlangıç + gün; ilk geçersiz gün = başlangıç + gün
-// Sadakat profilinde Puan Kulübü her zaman açıktır; deneme bilgisi yine ayrıca hesaplanır (loyTrial)
+// DigiPuan (profile:'sadakat') kaydında Puan Kulübü her zaman açıktır; deneme bilgisi yine ayrıca hesaplanır (loyTrial)
 function loyState(e) {
   const t = loyTrial(e);
   return e.profile === 'sadakat' ? Object.assign({}, t, { mode: 'on', sadakat: true }) : t;
@@ -773,7 +773,7 @@ function matches(key, e, f) {
 }
 function moduleTags(e) {
   const t = [], ls = loyState(e);
-  if (ls.sadakat) t.push(['b-ok', '👤 Sadakat profili · ⭐ dahil']);
+  if (ls.sadakat) t.push(['b-ok', '📇 DigiPuan · ⭐ dahil']);
   else if (ls.mode === 'on') t.push(!ls.until ? ['b-ok', '⭐ Puan Kulübü'] : ls.ended ? ['b-bad', '⭐ Puan Kulübü süresi doldu · ' + fmtDate(ls.until)]
     : [ls.left <= 7 ? 'b-warn' : 'b-ok', '⭐ Puan Kulübü · ' + fmtDate(ls.until) + ' tarihine kadar']);
   else if (ls.mode === 'trial') t.push(!ls.start ? ['b-warn', '⭐ Puan denemesi · ' + ls.days + ' gün (başlangıç uygulamada)']
@@ -821,7 +821,7 @@ function validateEntry(k, e, isNew) {
   if (!isDate(e.expiry)) bad('"expiry" YYYY-AA-GG biçiminde gerçek bir tarih olmalı');
   if (typeof e.business !== 'string' || !e.business.trim()) bad('işletme adı boş olamaz');
   if ('loyalty' in e && ![true, false, 'trial'].includes(e.loyalty)) bad('"loyalty" yalnız true / "trial" / false olabilir');
-  if ('profile' in e && !['', 'sadakat'].includes(e.profile)) bad('"profile" boş ya da "sadakat" olabilir');
+  if ('profile' in e && !['', 'sadakat'].includes(e.profile)) bad('"profile" boş ya da "sadakat" (DigiPuan) olabilir');
   if ('noBranding' in e && typeof e.noBranding !== 'boolean') bad('"noBranding" true/false olmalı');
   if ('loyaltyTrialStart' in e && !isDate(e.loyaltyTrialStart)) bad('"loyaltyTrialStart" YYYY-AA-GG olmalı');
   if ('loyaltyTrialDays' in e && !posInt(e.loyaltyTrialDays, 365)) bad('"loyaltyTrialDays" 1–365 arası tam sayı olmalı');
@@ -841,7 +841,7 @@ function checkInvariants(fresh, next, touched, newKeys) {
   if (Object.keys(fk).length && !Object.keys(nk).length) throw new Error('Lisans listesi boşaltılamaz.');
   for (const k of touched) if (k in nk) validateEntry(k, nk[k], newKeys.includes(k));
 }
-const FIELD = { active: 'Durum', expiry: 'Bitiş', business: 'İşletme', loyalty: 'Puan Kulübü', profile: 'Profil', noBranding: 'İbare', cid: 'Müşteri kimliği', createdAt: 'Oluşturma',
+const FIELD = { active: 'Durum', expiry: 'Bitiş', business: 'İşletme', loyalty: 'Puan Kulübü', profile: 'Kullanım', noBranding: 'İbare', cid: 'Müşteri kimliği', createdAt: 'Oluşturma',
   loyaltyTrialStart: 'Puan denemesi başlangıcı', loyaltyTrialDays: 'Puan denemesi (gün)', loyaltyExpiry: 'Puan Kulübü bitişi' };
 function showVal(f, v) {
   if (v === undefined) return '—';
@@ -849,7 +849,7 @@ function showVal(f, v) {
   if (f === 'expiry' || f === 'loyaltyTrialStart' || f === 'loyaltyExpiry') return fmtDate(v);
   if (f === 'loyalty') return v === true ? 'Aktif' : v === 'trial' ? 'Deneme' : 'Kapalı';
   if (f === 'noBranding') return v === true ? 'Gizli' : 'Görünür';
-  if (f === 'profile') return v === 'sadakat' ? 'Sadakat' : 'Standart';
+  if (f === 'profile') return v === 'sadakat' ? 'DigiPuan' : 'DigiPark (standart)';
   return typeof v === 'string' ? v : JSON.stringify(v);
 }
 function diffLines(fresh, next, touched) {
@@ -1006,7 +1006,7 @@ function dayPicker(init, onChange) {
   return { el: h('div', { class: 'row daypick' }, btns, inp), get: () => inp.value.trim() ? posInt(inp.value, 365) : sel };
 }
 
-// ── Modüller: Puan Kulübü, Sadakat profili, ibare ──
+// ── Modüller: Puan Kulübü, kullanım (DigiPark / DigiPuan = profile:'sadakat'), ibare ──
 async function modulesKey(k) {
   const e = S.base.keys[k], ls = loyTrial(e), c = cfg();
   let loy = e.loyalty === true ? 'on' : e.loyalty === 'trial' ? 'trial' : 'off';
@@ -1033,10 +1033,10 @@ async function modulesKey(k) {
     h('label', { text: '⭐ Puan Kulübü' }),
     segEl([['off', 'Kapalı'], ['trial', 'Deneme'], ['on', 'Aktif']], loy, v => { loy = v; trialBox.classList.toggle('hidden', v !== 'trial'); onBox.classList.toggle('hidden', v !== 'on'); }),
     trialBox, onBox,
-    h('label', { text: '👤 Profil' }),
-    segEl([['', 'Standart'], ['sadakat', 'Sadakat']], prof, v => { prof = v; }),
-    h('p', { class: 'note', text: 'Sadakat profili: başlık işletme adı olur, Puan Kulübü her zaman açıktır.' }),
-    h('label', { text: '🏷️ "DigiPark ile hazırlanmıştır" ibaresi' }),
+    h('label', { text: '📇 Kullanım' }),
+    segEl([['', 'DigiPark (standart)'], ['sadakat', 'DigiPuan (yalnız puan)']], prof, v => { prof = v; }),
+    h('p', { class: 'note', text: 'DigiPuan: yalnız Puan Kulübü ekranları açılır, oyun parkı bölümleri gizlenir; başlıkta işletme adı görünür ve Puan Kulübü her zaman açıktır.' }),
+    h('label', { text: '🏷️ "DigiPark ile hazırlanmıştır" ibaresi (DigiPuan\'da "DigiPuan ile")' }),
     segEl([['show', 'Görünsün'], ['hide', 'Gizlensin']], noBr ? 'hide' : 'show', v => { noBr = v === 'hide'; }));
   if (!(await sheet('🧩 Modüller', body, [{ label: 'Vazgeç', value: false }, { label: 'Devam', value: true, cls: 'primary' }]))) return;
   const days = loy === 'trial' ? pick.get() : null;

@@ -20,7 +20,7 @@ Bin kimlikleri ve JSONBin Master Key kurulumda girilir. Yönetici şifresinden P
 ## Oturum 2 (0.3.2)
 
 - **Modüller** (kartta 🧩): Puan Kulübü `loyalty` = `false` / `"trial"` / `true`; deneme için `loyaltyTrialStart`
-  (YYYY-AA-GG) ve `loyaltyTrialDays` (1–365) yazılır. `profile: "sadakat"`, `noBranding: true` (ibare gizli).
+  (YYYY-AA-GG) ve `loyaltyTrialDays` (1–365) yazılır. `profile: "sadakat"` (ekranda **DigiPuan**: yalnız Puan Kulübü; teknik değer eski sürümlerle uyum için değişmez), `noBranding: true` (ibare gizli).
 - **Ayarlar** (yönetim kaydında, şifreli): paketler (ad/ay/fiyat), deneme varsayılanları (ana 7, Puan Kulübü 14 gün),
   WhatsApp şablonları (`{isletme} {anahtar} {bitis} {ay} {gun}`). Fiyat yalnız günlüğe yazılır.
 - **Eski kayıtları müşteriye bağla**: kimliksiz anahtarlar ada göre gruplanır (tek başına olanlar da listelenir).
